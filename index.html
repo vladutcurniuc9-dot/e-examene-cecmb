@@ -1116,10 +1116,10 @@ function render(){
   let foot='';
   if(S.exam)foot=`<button class="pill ${last?'r':''}" data-a="next">${last?'📝 Predă examenul':'Următoarea'}</button>`;
   else if(chk)foot=`<div class="fb ${ok?'ok':'bad'}">${ok?'Corect! 🎉':(S.hint[i]?'💡 Răspuns: ':'Greșit · Răspuns corect: ')+esc(answerText(q))}</div><button class="pill" data-a="next">${last?'Vezi rezultatul':'Următoarea'}</button>`;
-  else foot=(q.t!=='single'?`<button class="pill g" data-a="check" ${complete?'':'disabled'}>Verifică</button>`:'')+(S.exam?'':`<button class="pill gh" data-a="reveal">💡 Indiciu</button>`);
+  else foot=(q.t!=='single'?`<button class="pill g" data-a="check" ${complete?'':'disabled'}>Verifică</button>`:'')+(S.exam?'':`<button class="pill gh" data-a="reveal">💡 ${S.searchPractice?"Arată răspunsul corect":"Indiciu"}</button>`);
   view(`<div class="bar"><i style="width:${i/S.list.length*100}%"></i></div>
   <div class="qhead"><span class="badge">Nr. ${q.n} · ${i+1}/${S.list.length}</span>${S.exam?'<span class="badge" id="clock">⏱</span>':`<span class="badge">${modeName[S.mode]}</span>`}<button class="star ${star?'on':''}" data-a="star" aria-label="Marchează">★</button></div>
-  <p class="qtext">${q.t==='text'?fillText(q,sel,chk):esc(q.s)}</p>${q.img?`<img class="qimg" src="${q.img}" alt="">`:''}${hint?`<p class="msg">${hint}</p>`:''}${body}${foot}`,modeName[S.mode]);
+  <p class="qtext">${q.t==='text'?fillText(q,sel,chk):esc(q.s)}</p>${q.img?`<img class="qimg" src="${q.img}" alt="">`:''}${hint?`<p class="msg">${hint}</p>`:''}${body}${foot}${S.searchPractice?'<button class="pill gh" data-x="back">← Înapoi la căutare</button>':""}`,modeName[S.mode]);
   if(S.exam)tick();
 }
 function pick(d){
@@ -1385,9 +1385,13 @@ function doSearch(){const o=$('#sres');if(!o)return;const res=find(SQ.q,SQ.scope
 function searchView(scope){SQ.scope=scope||'';const ex=SQ.scope&&exOf(SQ.scope);
   view(`<h1>🔎 Caută întrebarea</h1><input id="sq" aria-label="Caută după număr sau text" type="search" placeholder="ex: 215 · un cuvânt · textul întrebării" value="${esc(SQ.q)}" autocomplete="off" enterkeyhint="search"><select id="ssc" class="ssel"><option value="">Toate examenele</option>${real().map(e=>`<option value="${e.id}"${e.id===SQ.scope?' selected':''}>${esc(e.t)}</option>`).join('')}</select><div id="sres"></div><button class="pill gh" ${ex?`data-ex="${ex.id}"`:'data-go="home"'}>Înapoi</button>`,'Căutare');
   doSearch();$('#sq').focus()}
-function qView(eid,i){const ex=exOf(eid),q=ex.q[i],on=pins().includes(uidOf(ex,i));
-  const opts=(q.t==='single'||q.t==='multi')?q.o.map((o,k)=>`<div class="so choice-${q.t} ${(q.t==='single'?q.a===k:q.a.includes(k))?'ok':''}"><b>${L(k)}</b><span>${esc(o)}</span></div>`).join(''):'';
-  view(`<div class="qhead"><span class="badge">Nr. ${q.n}</span><span class="badge">${esc(ex.t)}</span></div>${questionGuide(q,false)}<p class="qtext">${esc(q.s)}</p>${q.img?`<img class="qimg" src="${q.img}" alt="">`:''}${pdfQuestionFigures(q)}${opts}<div class="fb ok">✅ ${esc(answerText(q))}</div><button class="pill ${on?'r':'g'}" data-x="pin" data-v="1" data-e="${eid}" data-i="${i}">${on?'Scoate din lista mea':'📌 Adaugă în lista mea'}</button><button class="pill gh" data-x="back">Înapoi la căutare</button>`,'Căutare')}
+function qView(eid,i){
+  const ex=exOf(eid);
+  if(!studyHasExams()||ex?.y!==U.year||!ex.q[i])return;
+  checkpoint();clearInterval(timer);AS=null;
+  S={e:ex,mode:'ordered',searchPractice:true,exam:false,list:[i],i:0,ans:{},chk:{},ok:{},hint:{},perm:[ident(ex.q[i].o.length)],end:0};
+  render();
+}
 
 document.body.addEventListener('input',e=>{if(e.target.id==='sq'){SQ.q=e.target.value;SQ.lim=40;clearTimeout(SQ.t);SQ.t=setTimeout(doSearch,120)}});
 document.body.addEventListener('change',e=>{if(e.target.id==='ssc'){SQ.scope=e.target.value;SQ.lim=40;doSearch()}});
@@ -1395,7 +1399,7 @@ document.body.addEventListener('click',e=>{const b=e.target.closest('[data-x]');
   if(d.x==='search')return searchView(d.e);
   if(d.x==='lock'){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');return toast('🔒 Mai rezolvă '+d.n+' întrebări în acest examen ca să deblochezi Mod Dificil')}
   if(d.x==='open')return qView(d.e,+d.i);
-  if(d.x==='back')return searchView(SQ.scope);
+  if(d.x==='back'){if(S?.searchPractice){S=null;clearInterval(timer)}return searchView(SQ.scope);}
   if(d.x==='more'){SQ.lim+=40;return doSearch()}
   if(d.x==='pin'){const on=togglePin(uidOf(exOf(d.e),+d.i));if(d.v)return qView(d.e,+d.i);b.classList.toggle('on',on);return toast(on?'📌 Adăugată în lista ta':'Scoasă din lista ta')}
   if(d.x==='pinq'&&S){const on=togglePin(uidOf(S.e,S.list[S.i]));b.classList.toggle('on',on);toast(on?'📌 Adăugată în lista ta':'Scoasă din lista ta')}
