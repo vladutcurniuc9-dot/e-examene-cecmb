@@ -1894,8 +1894,8 @@ document.body.addEventListener('click',e=>{
     {"id":"amg5-palliative","program":"AMG","year":5,"category":"thesis","format":"electronic","ro":"Îngrijiri paliative","ru":"Паллиативная помощь","banks":[]},
     {"id":"amg5-nutrition","program":"AMG","year":5,"category":"thesis","format":"electronic","ro":"Nutriția umană","ru":"Питание человека","banks":[]},
     {"id":"amg5-ophthalmology","program":"AMG","year":5,"category":"thesis","format":"electronic","ro":"Oftalmologie","ru":"Офтальмология","banks":[]},
-    {"id":"amg5-endocrinology","program":"AMG","year":5,"category":"exam","format":"mixed","ro":"Endocrinologie, reumatologie și alergologie cu NS","ru":"Эндокринология, ревматология и аллергология со специфическим сестринским уходом","banks":[]},
-    {"id":"amg5-infections","program":"AMG","year":5,"category":"exam","format":"electronic","ro":"Maladii infecțioase la copii","ru":"Инфекционные болезни у детей","banks":[]},
+    {"id":"amg5-endocrinology","program":"AMG","year":5,"category":"exam","format":"mixed","ro":"Endocrinologie, reumatologie și alergologie cu NS","ru":"Эндокринология, ревматология и аллергология со специфическим сестринским уходом","banks":[],"document":{"title":"Endocrinologie și alergologie cu Nursing Specific","file":"endocrinologie-alergologie-amg5-s1.pdf","pages":77}},
+    {"id":"amg5-infections","program":"AMG","year":5,"category":"exam","format":"electronic","ro":"Maladii infecțioase la copii","ru":"Инфекционные болезни у детей","banks":[],"document":{"title":"Maladii infecțioase la copii cu Nursing Specific","file":"maladii-infectioase-copii-amg5-s1.pdf","pages":75}},
     {"id":"am1-computer","program":"AM","year":1,"category":"thesis","format":"electronic","ro":"Utilizarea calculatorului","banks":[]},
     {"id":"am1-latin","program":"AM","year":1,"category":"thesis","format":"electronic","ro":"Limba latină","banks":[]},
     {"id":"am1-bacteriology","program":"AM","year":1,"category":"exam","format":"electronic","ro":"Bacteriologia, virusologia și parazitologia medicală","banks":[]},
@@ -1924,7 +1924,10 @@ const evaluationTitle=row=>studyRussian()?(row.ru||row.ro):row.ro;
 const evaluationFormat=row=>row.format==='mixed'?studyText('Formă mixtă · probă la calculator + probă practică orală','Смешанная форма · компьютерная часть + устная практическая часть'):row.format==='electronic'?studyText('Formă electronică · probă la calculator','Электронная форма · компьютерная часть'):studyText('Material publicat anterior · forma nu este precizată în PDF','Ранее добавленные материалы · форма не указана в PDF');
 function evaluationScope(row){return row.format==='mixed'?`<p class="path-note">${studyText('Evaluarea include o probă la calculator, cu itemi teoretici și practici, și o probă practică orală. Platforma oferă pregătire doar pentru proba la calculator. Proba orală se susține separat, la colegiu.','Оценивание включает компьютерную часть с теоретическими и практическими заданиями и устную практическую часть. Платформа готовит только к компьютерной части. Устная часть проводится отдельно в колледже.')}</p>`:''}
 function evaluationBanks(row){return studyHasExams()&&row.program===(U.program||'AMG')?row.banks.map(exOf).filter(Boolean):[]}
-function evaluationStatus(row){return evaluationBanks(row).length?studyText('Materiale pentru calculator disponibile','Материалы для компьютерной части доступны'):studyText('În lucru','В разработке')}
+function evaluationDocument(row){
+ return studyHasExams()&&row.program===(U.program||'AMG')?row.document:null;
+}
+function evaluationStatus(row){return evaluationBanks(row).length||evaluationDocument(row)?studyText('Materiale pentru calculator disponibile','Материалы для компьютерной части доступны'):studyText('În lucru','В разработке')}
 function evaluationTiles(rows,semester=1){return rows.map(row=>`<button class="tile" data-evaluation="open" data-evaluation-id="${esc(row.id)}" data-evaluation-year="${row.year}" data-evaluation-semester="${semester}"><strong>${esc(evaluationTitle(row))}</strong><small>${evaluationFormat(row)}</small><small>${evaluationStatus(row)}</small></button>`).join('')}
 function evaluationYear(year){
  if(!U||!studyYears(U.program).includes(Number(year)))return;
@@ -1943,6 +1946,13 @@ year=evaluationYear;
 function evaluationOpen(id,year,semester=1){
  const row=evaluationRows(U.program||'AMG',year,semester).find(x=>x.id===id);if(!row)return;
  const banks=evaluationBanks(row),back=`<button class="pill gh" data-evaluation="semester" data-evaluation-year="${year}" data-evaluation-semester="${semester}">${studyText('← Înapoi la evaluări','← К списку работ')}</button>`;
+ const pdf=evaluationDocument(row);
+ if(pdf&&!banks.length){
+  const prefix=location.protocol==='file:'&&!location.pathname.includes('/public/')?'./public/':'./';
+  const href=esc(prefix+pdf.file);
+  view(`<h1>${esc(evaluationTitle(row))}</h1><p class="hero-note">${evaluationFormat(row)}</p>${evaluationScope(row)}<section class="glass"><h2>${esc(pdf.title)}</h2><p>Ghid de itemi în format PDF · ${pdf.pages} pagini</p><div class="row"><a class="pill" href="${href}" target="_blank" rel="noopener noreferrer">Deschide PDF-ul original ↗</a><a class="pill gh" href="${href}" download>Descarcă PDF-ul</a></div></section>${back}`,evaluationTitle(row));
+  return;
+ }
  if(banks.length===1&&row.format!=='mixed'&&U.year===year)return examMenu(banks[0]);
  const available=banks.length>0;
  view(`<h1>${esc(evaluationTitle(row))}</h1><p class="hero-note">${evaluationFormat(row)}</p>${evaluationScope(row)}${!available?`<div class="glass"><h2>${studyText('În lucru','В разработке')}</h2><p>${studyText('Disciplina este inclusă în structură. Întrebările și materialele nu sunt încă publicate pentru această grupă și limbă.','Дисциплина включена в план. Вопросы и материалы для этой программы и языка пока не опубликованы.')}</p></div>`:U.year!==year?`<div class="glass"><p>${studyText('Materialele sunt publicate. Pentru a începe, selectează anul de studii corespunzător din setări.','Материалы опубликованы. Чтобы начать, выберите соответствующий курс в настройках.')}</p><button class="pill" data-study="choose">${studyText('Alege anul de studii','Выбрать курс')}</button></div>`:`<div class="grid">${banks.map(ex=>`<button class="tile" data-ex="${esc(ex.id)}">${esc(ex.t)}<small>${ex.q.length} ${studyText('întrebări','вопросов')}</small></button>`).join('')}</div>`}${back}`,available?evaluationTitle(row):studyText('În lucru','В разработке'));
