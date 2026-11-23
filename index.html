@@ -1860,10 +1860,16 @@ function nursingPreserveMedia(draw,flash=false){
  if(!flash)nursingPrepareOrder();
  draw();if(!S)return;const q=S.e.q[S.list[S.i]];nursingQuestionMedia(q,flash);
  // Restore after inserting context and figures; the earlier core render has a shorter layout.
- if(same&&(q.context||q.images||q.optionImages))window.scrollTo(0,top);
+ if(same&&(q.context||q.images||q.optionImages||q.pdfFigures))window.scrollTo(0,top);
 }
 const nursingRender=render;render=function(){nursingPreserveMedia(nursingRender)};
 const nursingFlash=showF;showF=function(){nursingPreserveMedia(nursingFlash,true)};
+const originalQuestionPreview=qView;
+qView=function(examId,index){
+ originalQuestionPreview(examId,index);
+ const q=exOf(examId)?.q[index];
+ if(q?.pdfFigures?.length)nursingQuestionMedia(q);
+};
 const nursingMenu=examMenu;examMenu=function(ex,note=''){
  nursingMenu(ex,note);if(ex?.id!=='nursing-general-practica'||!studyHasExams()||U?.year!==2)return;
  $('#main .glass')?.insertAdjacentHTML('afterend',`<section class="glass"><h2>18 situații practice</h2><p>Poți exersa o situație completă sau poți folosi modurile de pregătire de mai jos. Imaginile păstrează numerotarea documentului.</p><button class="pill gh" data-nursing="cases">Alege situația practică →</button></section>`);
