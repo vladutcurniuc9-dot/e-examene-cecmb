@@ -7967,19 +7967,19 @@ document.body.addEventListener('click',event=>{
   }
 ]
 ;/* Written practice stays separate from multiple-choice exam sessions. */
-const pharmaTitle='Farmacologie · Bilete pentru proba scrisă';
+const pharmaTitle='Farmacologie · Bilete pentru proba orală';
 const pharmaBack='<button class="pill gh" data-pharma="menu">← Moduri de pregătire</button>';
 const pharmaAccess=()=>U?.year===2&&studyHasExams();
 let pharmaAttempt=null;
 
 function pharmaMenu(){
  if(!pharmaAccess())return;
- view(`<h1>Farmacologie</h1><p class="hero-note">Probă în scris · Anul II · Semestrul I · ${PHARMACOLOGY_TICKETS.length} bilete</p>
+ view(`<h1>Farmacologie</h1><p class="hero-note">Probă orală · Anul II · Semestrul I · ${PHARMACOLOGY_TICKETS.length} bilete</p>
  <div class="grid">
   <button class="tile" data-pharma="list" data-mode="learn">📚 Învață din bilete<small>Citește cerințele și rezolvările din document</small></button>
   <button class="tile" data-pharma="list" data-mode="recall">🧠 Recapitulare activă<small>Spune ce îți amintești, apoi compară cu modelul</small></button>
   <button class="tile" data-pharma="list" data-mode="practice">✍️ Antrenament scris<small>Alege un bilet și redactează răspunsul</small></button>
-  <button class="tile" data-pharma="exam">📝 Simulare scrisă<small>Primești un bilet aleatoriu și răspunzi la toate cele trei subiecte</small></button>
+  <button class="tile" data-pharma="exam">📝 Simulare pentru proba orală<small>Primești un bilet aleatoriu și redactezi răspunsul pentru feedback</small></button>
   ${pharmaAttempt?.owner===U.id?`<button class="tile" data-pharma="resume">${pharmaAttempt.result?'Ultimul rezultat':'Continuă răspunsul'}<small>Biletul ${pharmaAttempt.ticket.n}</small></button>`:''}
  </div><p class="path-note">AI evaluează răspunsurile după trimitere, dacă ești conectat(ă). Nota este orientativă. Poți folosi și modelul din document pentru autoevaluare.</p>
  <button class="pill gh" data-evaluation="semester" data-evaluation-year="2" data-evaluation-semester="1">← Înapoi la evaluări</button>`,pharmaTitle);
@@ -8005,7 +8005,7 @@ function pharmaWrite(){
  const s=pharmaAttempt;
  if(!s||s.owner!==U.id)return pharmaMenu();
  if(s.result||s.selfReview)return pharmaResults();
- view(`<h1>${s.exam?'Simulare scrisă':'Antrenament scris'} · Biletul ${s.ticket.n}</h1>
+ view(`<h1>${s.exam?'Simulare pentru proba orală':'Antrenament scris'} · Biletul ${s.ticket.n}</h1>
  <section class="glass">${pharmaPrompts(s.ticket)}</section>
  <section class="glass"><form id="pharma-answer-form"><label for="pharma-answer"><strong>Răspunsul tău</strong></label>
  <p id="pharma-help">Numerotează cele trei subiecte și explică pe scurt ideile esențiale, cu propriile cuvinte.</p>
@@ -8135,7 +8135,7 @@ function evaluationRussianAnatomy(row){
 function evaluationStatus(row){if(row.format==='written')return PHARMACOLOGY_TICKETS.length+' de bilete rezolvate';if(evaluationRussianAnatomy(row))return 'Материалы доступны';return evaluationBanks(row).length||evaluationDocument(row)?studyText('Materiale pentru calculator disponibile','Материалы для компьютерной части доступны'):studyText('În lucru','В разработке')}
 function evaluationTiles(rows,semester=1){return rows.map(row=>{
  const part=evaluationRussianAnatomy(row);
- const detail=row.format==='written'?'Probă în scris':part==='theory'?'297 вопросов · автоматическая проверка':part==='plates'?'35 рисунков из документа':evaluationFormat(row);
+ const detail=row.format==='written'?'Probă orală':part==='theory'?'297 вопросов · автоматическая проверка':part==='plates'?'35 рисунков из документа':evaluationFormat(row);
  return `<button class="tile" data-evaluation="open" data-evaluation-id="${esc(row.id)}" data-evaluation-year="${row.year}" data-evaluation-semester="${semester}"><strong>${esc(evaluationTitle(row))}</strong><small>${detail}</small><small>${evaluationStatus(row)}</small></button>`;
 }).join('')}
 function evaluationYear(year){
@@ -8156,7 +8156,7 @@ function evaluationOpen(id,year,semester=1){
  const row=evaluationRows(U.program||'AMG',year,semester).find(x=>x.id===id);if(!row)return;
  if(row.format==='written'){
   if(U.year===2&&studyHasExams())return pharmaMenu();
-  return view('<h1>Farmacologie</h1><p class="path-note">Probă în scris · Selectează anul II în profil ca să deschizi biletele.</p><button class="pill" data-study="choose">Alege anul de studii</button>','Farmacologie');
+  return view('<h1>Farmacologie</h1><p class="path-note">Probă orală · Selectează anul II în profil ca să deschizi biletele.</p><button class="pill" data-study="choose">Alege anul de studii</button>','Farmacologie');
  }
  const russianAnatomy=evaluationRussianAnatomy(row);
  if(russianAnatomy==='theory')return anatomyRuMenu();
