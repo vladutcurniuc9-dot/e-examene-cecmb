@@ -7565,10 +7565,16 @@ function anatomyRuAdvance(){
    s.results[q.n]=correct?'correct':'wrong';
    anatomyRuUpdate(q.n,{result:s.results[q.n]});
   }
-  s.review=true;s.index=0;return anatomyRuQuestion();
+  return anatomyRuResult(true);
  }
- const results=Object.values(s.results);
- return anatomyRuMenu(`Проверено: ${results.length} из ${s.list.length}. Правильных ответов: ${results.filter(x=>x==='correct').length}.`);
+ return anatomyRuResult();
+}
+function anatomyRuResult(canReview=false){
+ const s=anatomyRuSession;
+ const total=s.list.length,correct=s.list.filter(q=>s.results[q.n]==='correct').length;
+ const percent=Math.round(correct/total*100);
+ view(`<section class="glass"><h1>Результат теста</h1><p class="hi">${percent}%</p><p class="hi">Оценка: ${grade(percent)} из 10</p><p>Правильных ответов: ${correct} из ${total}</p></section>
+ ${canReview?'<button class="pill" data-ru-anatomy="review">Посмотреть ответы</button>':''}${anatomyRuMenuBack}`,anatomyRuTitles.theory);
 }
 
 function anatomyRuLoadFigures(){
@@ -7632,6 +7638,9 @@ document.body.addEventListener('click',event=>{
  if(action==='item')return anatomyRuStart('single',Number(b.dataset.number));
  const s=anatomyRuSession;
  if(!s)return;
+ if(action==='review'&&s.mode==='exam'&&!s.review&&Object.keys(s.results).length===s.list.length){
+  s.review=true;s.index=0;return anatomyRuQuestion();
+ }
  const q=s.list[s.index];
  if(action==='show'||action==='check')return anatomyRuCheck(action==='show');
  if(action==='pick'&&!s.shown&&!(s.mode==='exam'&&s.review)){
