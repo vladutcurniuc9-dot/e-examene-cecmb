@@ -8087,7 +8087,7 @@ document.body.addEventListener('click',event=>{
     {"id":"amg5-ophthalmology","program":"AMG","year":5,"category":"thesis","format":"electronic","ro":"Oftalmologie","ru":"Офтальмология","banks":[]},
     {"id":"amg5-endocrinology","program":"AMG","year":5,"category":"exam","format":"mixed","ro":"Endocrinologie, reumatologie și alergologie cu NS","ru":"Эндокринология, ревматология и аллергология со специфическим сестринским уходом","banks":["amg5-endocrinology-items"],"document":{"title":"Endocrinologie și alergologie cu Nursing Specific","file":"endocrinologie-alergologie-amg5-s1.pdf","pages":77}},
     {"id":"amg5-infections","program":"AMG","year":5,"category":"exam","format":"electronic","ro":"Maladii infecțioase la copii","ru":"Инфекционные болезни у детей","banks":["amg5-infections-items"],"document":{"title":"Maladii infecțioase la copii cu Nursing Specific","file":"maladii-infectioase-copii-amg5-s1.pdf","pages":75}},
-    {"id":"am1-computer","program":"AM","year":1,"category":"thesis","format":"electronic","ro":"Utilizarea calculatorului","banks":[]},
+    {"id":"am1-computer","program":"AM","year":1,"category":"thesis","format":"electronic","ro":"Utilizarea calculatorului","banks":[],"document":{"title":"Utilizarea calculatorului și tehnologia comunicațiilor în specialitate","file":"utilizarea-calculatorului-am1-s1.pdf","pages":66,"originalViewer":true}},
     {"id":"am1-latin","program":"AM","year":1,"category":"thesis","format":"electronic","ro":"Limba latină","banks":[]},
     {"id":"am1-bacteriology","program":"AM","year":1,"category":"exam","format":"electronic","ro":"Bacteriologia, virusologia și parazitologia medicală","banks":[]},
     {"id":"am1-nursing","program":"AM","year":1,"category":"exam","format":"mixed","ro":"Nursing general și specific","banks":[]},
@@ -8119,11 +8119,15 @@ const evaluationFormat=row=>row.format==='mixed'?studyText('Formă mixtă · pro
 function evaluationScope(row){return row.format==='mixed'?`<p class="path-note">${studyText('Evaluarea include o probă la calculator, cu itemi teoretici și practici, și o probă practică orală. Platforma oferă pregătire doar pentru proba la calculator. Proba orală se susține separat, la colegiu.','Оценивание включает компьютерную часть с теоретическими и практическими заданиями и устную практическую часть. Платформа готовит только к компьютерной части. Устная часть проводится отдельно в колледже.')}</p>`:''}
 function evaluationBanks(row){return studyHasExams()&&row.program===(U.program||'AMG')?row.banks.map(exOf).filter(Boolean):[]}
 function evaluationDocument(row){
+ if(row.document?.originalViewer)return U?.program===row.program&&(U.language||'ro')==='ro'?row.document:null;
  return studyHasExams()&&row.program===(U.program||'AMG')?row.document:null;
 }
-function evaluationDocumentLinks(pdf){
+function evaluationDocumentHref(pdf){
  const prefix=location.protocol==='file:'&&!location.pathname.includes('/public/')?'./public/':'./';
- const href=esc(prefix+pdf.file);
+ return esc(prefix+pdf.file);
+}
+function evaluationDocumentLinks(pdf){
+ const href=evaluationDocumentHref(pdf);
  return `<div class="row"><a class="pill gh" href="${href}" target="_blank" rel="noopener noreferrer">Deschide PDF-ul original ↗</a><a class="pill gh" href="${href}" download>Descarcă PDF-ul</a></div>`;
 }
 function evaluationRussianAnatomy(row){
@@ -8164,7 +8168,7 @@ function evaluationOpen(id,year,semester=1){
  const banks=evaluationBanks(row),back=`<button class="pill gh" data-evaluation="semester" data-evaluation-year="${year}" data-evaluation-semester="${semester}">${studyText('← Înapoi la evaluări','← К списку работ')}</button>`;
  const pdf=evaluationDocument(row);
  if(pdf&&!banks.length){
-  view(`<h1>${esc(evaluationTitle(row))}</h1><p class="hero-note">${evaluationFormat(row)}</p>${evaluationScope(row)}<section class="glass"><h2>${esc(pdf.title)}</h2><p>Ghid de itemi în format PDF · ${pdf.pages} pagini</p>${evaluationDocumentLinks(pdf)}</section>${back}`,evaluationTitle(row));
+  view(`<h1>${esc(evaluationTitle(row))}</h1><p class="hero-note">${evaluationFormat(row)}</p>${evaluationScope(row)}<section class="glass"><h2>${esc(pdf.title)}</h2><p>Ghid de itemi în format PDF · ${pdf.pages} pagini</p>${evaluationDocumentLinks(pdf)}${pdf.originalViewer?`<iframe title="Exercițiile din documentul original" src="${evaluationDocumentHref(pdf)}" style="display:block;width:100%;height:72vh;border:0;margin-top:1rem"></iframe>`:''}</section>${back}`,evaluationTitle(row));
   return;
  }
  if(banks.length===1&&row.format!=='mixed'&&U.year===year)return examMenu(banks[0]);
