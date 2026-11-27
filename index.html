@@ -3626,7 +3626,11 @@ function evaluationRussianAnatomy(row){
  return '';
 }
 function evaluationStatus(row){if(evaluationRussianAnatomy(row))return 'Материалы доступны';return evaluationBanks(row).length||evaluationDocument(row)?studyText('Materiale pentru calculator disponibile','Материалы для компьютерной части доступны'):studyText('În lucru','В разработке')}
-function evaluationTiles(rows,semester=1){return rows.map(row=>`<button class="tile" data-evaluation="open" data-evaluation-id="${esc(row.id)}" data-evaluation-year="${row.year}" data-evaluation-semester="${semester}"><strong>${esc(evaluationTitle(row))}</strong><small>${evaluationFormat(row)}</small><small>${evaluationStatus(row)}</small></button>`).join('')}
+function evaluationTiles(rows,semester=1){return rows.map(row=>{
+ const part=evaluationRussianAnatomy(row);
+ const detail=part==='theory'?'Вопросы с самопроверкой':part==='plates'?'35 рисунков из документа':evaluationFormat(row);
+ return `<button class="tile" data-evaluation="open" data-evaluation-id="${esc(row.id)}" data-evaluation-year="${row.year}" data-evaluation-semester="${semester}"><strong>${esc(evaluationTitle(row))}</strong><small>${detail}</small><small>${evaluationStatus(row)}</small></button>`;
+}).join('')}
 function evaluationYear(year){
  if(!U||!studyYears(U.program).includes(Number(year)))return;
  view(`<h1>${studyText('Anul','Курс')} ${year} · ${esc(U.program||'AMG')}</h1><div class="grid">${[1,2].map(s=>`<button class="tile" data-evaluation="semester" data-evaluation-year="${year}" data-evaluation-semester="${s}">${studyText('Semestrul','Семестр')} ${s}<small>${evaluationRows(U.program||'AMG',Number(year),s).length} ${studyText('evaluări în structură','оценочных работ в плане')}</small></button>`).join('')}</div><button class="pill gh" data-study="home">${studyText('← Acasă','← На главную')}</button>`,studyText('Structura evaluărilor','Структура оценивания'));
@@ -3667,7 +3671,12 @@ home=function(){
  evaluationHome();if(!U?.year)return;
  const program=U.program||'AMG',rows=evaluationRows(program,U.year);
  $('#main')?.insertAdjacentHTML('beforeend',`<section class="glass"><p class="eyebrow">${studyText('Sesiunea de iarnă 2026','Зимняя сессия 2026')}</p><h2>${studyText('Structura evaluărilor','Структура оценивания')}</h2><p>${studyText('Vezi disciplinele, forma evaluării și ce materiale sunt deja disponibile.','Посмотрите дисциплины, форму оценивания и доступность материалов.')}</p><div class="grid">${studyYears(program).map(y=>`<button class="tile" data-evaluation="year" data-evaluation-year="${y}">${studyText('Anul','Курс')} ${y}<small>${evaluationRows(program,y).length} ${studyText('evaluări în structură','оценочных работ в плане')}</small></button>`).join('')}</div></section>`);
- document.querySelectorAll('[data-study="year"]').forEach(button=>{const small=button.querySelector('small');if(small)small.textContent=evaluationRows(program,Number(button.dataset.year)).length+' '+studyText('evaluări · în lucru','работ · в разработке')});
+ document.querySelectorAll('[data-study="year"]').forEach(button=>{
+  const small=button.querySelector('small');
+  if(!small)return;
+  const entries=evaluationRows(program,Number(button.dataset.year));
+  small.textContent=entries.some(evaluationRussianAnatomy)?'Анатомия доступна':entries.length+' '+studyText('evaluări · în lucru','работ · в разработке');
+ });
  document.querySelectorAll('[data-sem]').forEach(button=>{const small=button.querySelector('small');if(small){const list=Number(button.dataset.sem)===1?rows:evaluationRows(program,U.year,2);small.textContent=list.length+' '+studyText('evaluări în structură','работ в плане')}});
 };
 // Capture the old restricted-year navigation: viewing a year must not change the saved student profile.
