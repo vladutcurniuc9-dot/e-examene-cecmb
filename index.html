@@ -1777,12 +1777,12 @@ const studyHasExams=()=>!!U&&(U.program||'AMG')==='AMG'&&(U.language||'ro')==='r
 const studyText=(ro,ru)=>studyRussian()?ru:ro;
 const studyHome=home,studySettings=settings,studySem=sem,studyStart=start,studySmall=startSmall,studyResume=resumeSession;
 function studyUnavailable(){view(`<p class="eyebrow">${esc(U.program||'AMG')} · ${studyRussian()?'Русский язык':'Limba română'} · ${studyText('Anul','Курс')} ${U.year}</p><h1>${studyText('Examene în pregătire','Экзамены готовятся')}</h1><div class="glass"><p>${studyText('Pentru acest program, această limbă și acest an de studii, examenele nu sunt încă disponibile. Le vom publica după pregătirea materialelor.','Для этой программы, языка и курса экзамены пока недоступны. Они появятся после подготовки учебных материалов.')}</p></div><button class="pill gh" data-study="home">${studyText('← Acasă','← На главную')}</button>`,studyText('Examene în pregătire','Экзамены готовятся'))}
-home=function(){studyDraft=null;if(!U?.year)return yearPicker(!!U?.guest);if(studyHasExams())return studyHome();S=null;AS=null;clearInterval(timer);view(`<p class="eyebrow">${esc(U.program||'AMG')} · ${studyRussian()?'Русский язык':'Limba română'}</p><h1>${studyText('Salut','Здравствуйте')}, ${esc(U.name.split(' ')[0])}!</h1><p class="hero-note">${studyText('Alege anul și semestrul. Materialele acestei secțiuni sunt în pregătire.','Выберите курс и семестр. Материалы этого раздела готовятся.')}</p><div class="grid">${studyYears(U.program).map(y=>`<button class="tile" data-study="year" data-year="${y}">${studyText('Anul','Курс')} ${y}<small>${studyText('Examenele nu sunt încă disponibile','Экзамены пока недоступны')}</small></button>`).join('')}</div><div class="row"><button class="pill gh" data-study="settings">⚙ ${studyText('Setări','Настройки')}</button><button class="pill gh" data-study="choose">${studyText('Program, limbă și an','Программа, язык и курс')}</button><button class="pill gh" data-study="logout">${studyText('Ieși din cont','Выйти')}</button></div>${studyRussian()?`<section class="glass"><h2>❤️ Поддержать платформу</h2><p>Поддержите развитие платформы, обслуживание серверов и создание ещё более удобных образовательных возможностей. Каждый вклад важен!</p><a class="pill" href="${MIA_DONATION_URL}" target="_blank" rel="noopener noreferrer">Пожертвовать через MIA ↗</a><p>Пожертвования добровольные. Обучение доступно всем.</p></section>`:donationSection()}`,studyText('Anul ','Курс ')+U.year)};
+home=function(){studyDraft=null;if(!U?.year)return yearPicker(!!U?.guest);if(studyHasExams())return studyHome();S=null;AS=null;clearInterval(timer);view(`<p class="eyebrow">${esc(U.program||'AMG')} · ${studyRussian()?'Русский язык':'Limba română'}</p><h1>${studyText('Salut','Здравствуйте')}, ${esc(U.name.split(' ')[0])}!</h1><p class="hero-note">${studyText('Alege anul și semestrul. Materialele acestei secțiuni sunt în pregătire.','Выберите курс и семестр, чтобы посмотреть доступные материалы.')}</p><div class="grid">${studyYears(U.program).map(y=>`<button class="tile" data-study="year" data-year="${y}">${studyText('Anul','Курс')} ${y}<small>${studyText('Examenele nu sunt încă disponibile','Экзамены пока недоступны')}</small></button>`).join('')}</div><div class="row"><button class="pill gh" data-study="settings">⚙ ${studyText('Setări','Настройки')}</button><button class="pill gh" data-study="choose">${studyText('Program, limbă și an','Программа, язык и курс')}</button><button class="pill gh" data-study="logout">${studyText('Ieși din cont','Выйти')}</button></div>${studyRussian()?`<section class="glass"><h2>❤️ Поддержать платформу</h2><p>Поддержите развитие платформы, обслуживание серверов и создание ещё более удобных образовательных возможностей. Каждый вклад важен!</p><a class="pill" href="${MIA_DONATION_URL}" target="_blank" rel="noopener noreferrer">Пожертвовать через MIA ↗</a><p>Пожертвования добровольные. Обучение доступно всем.</p></section>`:donationSection()}`,studyText('Anul ','Курс ')+U.year)};
 sem=function(y,s){if(!studyHasExams())return studyUnavailable();return studySem(y,s)};
 start=function(...args){if(!studyHasExams())return studyUnavailable();return studyStart(...args)};
 startSmall=function(...args){if(!studyHasExams())return studyUnavailable();return studySmall(...args)};
 resumeSession=function(){if(!studyHasExams())return studyUnavailable();return studyResume()};
-yearPicker=function(demo=!!U?.guest){const choice=studyDraft||U||{},p=choice.program||'AMG',lang=p==='AM'?'ro':choice.language||'ro',year=Math.min(choice.year||1,p==='AM'?3:5);view(`<div class="glass"><h1>${studyText('Alege programul, limba și anul','Выберите программу, язык и курс')}</h1><form id="study-access-form"><label for="study-program">${studyText('Programul de studii','Учебная программа')}</label><select id="study-program" class="full-select"><option value="AMG" ${p==='AMG'?'selected':''}>AMG · 5 ${studyText('ani','лет')}</option><option value="AM" ${p==='AM'?'selected':''}>AM · 3 ${studyText('ani · doar română','года · только румынский')}</option></select><div id="study-language-field" ${p==='AM'?'hidden':''}><label for="study-language">${studyText('Limba de studii','Язык обучения')}</label><select id="study-language" class="full-select"><option value="ro" ${lang==='ro'?'selected':''}>Română</option><option value="ru" ${lang==='ru'?'selected':''}>Русский</option></select></div><label for="study-year">${studyText('Anul de studii','Курс')}</label><select id="study-year" class="full-select">${studyYears(p).map(y=>`<option value="${y}" ${y===year?'selected':''}>${studyText('Anul','Курс')} ${y}</option>`).join('')}</select><p class="muted">${studyText('AM: 3 ani, numai în română. AMG: 5 ani, în română sau rusă. Examene publicate momentan: AMG în română.','AM: 3 курса, только на румынском. AMG: 5 курсов, на румынском или русском. Сейчас экзамены опубликованы для AMG на румынском.')}</p><button class="pill" type="submit">${studyText('Continuă','Продолжить')} →</button><p id="study-access-error" class="err" role="status"></p></form></div>`,studyText('Secțiunea mea','Мой раздел'));
+yearPicker=function(demo=!!U?.guest){const choice=studyDraft||U||{},p=choice.program||'AMG',lang=p==='AM'?'ro':choice.language||'ro',year=Math.min(choice.year||1,p==='AM'?3:5);view(`<div class="glass"><h1>${studyText('Alege programul, limba și anul','Выберите программу, язык и курс')}</h1><form id="study-access-form"><label for="study-program">${studyText('Programul de studii','Учебная программа')}</label><select id="study-program" class="full-select"><option value="AMG" ${p==='AMG'?'selected':''}>AMG · 5 ${studyText('ani','лет')}</option><option value="AM" ${p==='AM'?'selected':''}>AM · 3 ${studyText('ani · doar română','года · только румынский')}</option></select><div id="study-language-field" ${p==='AM'?'hidden':''}><label for="study-language">${studyText('Limba de studii','Язык обучения')}</label><select id="study-language" class="full-select"><option value="ro" ${lang==='ro'?'selected':''}>Română</option><option value="ru" ${lang==='ru'?'selected':''}>Русский</option></select></div><label for="study-year">${studyText('Anul de studii','Курс')}</label><select id="study-year" class="full-select">${studyYears(p).map(y=>`<option value="${y}" ${y===year?'selected':''}>${studyText('Anul','Курс')} ${y}</option>`).join('')}</select><p class="muted">${studyText('AM: 3 ani, numai în română. AMG: 5 ani, în română sau rusă. Anatomia este disponibilă și pentru AMG în rusă, anul 1.','AM: 3 курса, только на румынском. AMG: 5 курсов, на румынском или русском. Анатомия также доступна для AMG на русском языке, 1 курс.')}</p><button class="pill" type="submit">${studyText('Continuă','Продолжить')} →</button><p id="study-access-error" class="err" role="status"></p></form></div>`,studyText('Secțiunea mea','Мой раздел'));
  $('#study-program').onchange=()=>{const program=$('#study-program').value;studyDraft={program,language:program==='AM'?'ro':$('#study-language').value,year:Math.min(+$('#study-year').value,program==='AM'?3:5)};yearPicker(demo)};
  $('#study-language').onchange=()=>{studyDraft={program:$('#study-program').value,language:$('#study-language').value,year:+$('#study-year').value};yearPicker(demo)};
  $('#study-access-form').onsubmit=async e=>{e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;try{const program=$('#study-program').value,language=program==='AM'?'ro':$('#study-language').value,year=+$('#study-year').value;if(!studyYears(program).includes(year))throw Error('An invalid');if(!demo){const meta=cloudUser.user_metadata||{},names=U.name.split(' '),next={id:U.id,first_name:profile?.first_name||meta.first_name||names[0],last_name:profile?.last_name||meta.last_name||names.slice(1).join(' '),study_year:year,study_program:program,study_language:language,active:true};const {error}=await cloud.from('cecmb_profiles').upsert(next);if(error)throw error;profile=next}U.program=program;U.language=language;U.year=year;S=null;AS=null;clearInterval(timer);P.daily=null;localStorage.setItem('cecmb:language',language);if(demo)localStorage.setItem('cecmb:guest',JSON.stringify(U));saveReady=true;saveP();home()}catch{$('#study-access-error').textContent=studyText('Nu am putut salva selecția. Verifică conexiunea.','Не удалось сохранить выбор. Проверьте подключение.');button.disabled=false}};
@@ -1801,7 +1801,7 @@ if(U?.year)home();
 const studyPreparationModes=[['daily','⚡','Provocarea zilnică','Ежедневное задание'],['spaced','🌱','Repetare inteligentă','Интервальное повторение'],['short','🪴','Pași mici','Маленькие шаги'],['shuffle','🔀','Amestecat','В случайном порядке'],['ordered','📘','În ordine','По порядку'],['wrong','🎯','Greșite','Работа над ошибками'],['star','⭐','Stelate','Избранные вопросы'],['flash','🃏','Flashcards','Карточки'],['hard','🔥','Mod Dificil','Сложный режим'],['pin','📌','Lista mea','Мой список'],['search','🔎','Caută','Поиск'],['exam','📝','Examen','Экзамен'],['tutor','✦','Tutor AI Medical CMB','Медицинский ИИ-тьютор CMB']];
 function studyPreparation(){if(studyHasExams())return home();view(`<h1>${studyText('Moduri de pregătire','Режимы подготовки')}</h1><p class="hero-note">${studyText('Ai aceleași moduri de pregătire ca restul comunității. Acestea vor putea fi folosite după publicarea întrebărilor pentru secțiunea ta.','Вам доступны те же режимы подготовки, что и остальным учащимся. Их можно будет использовать после публикации вопросов для вашего раздела.')}</p><div class="grid">${studyPreparationModes.map(([id,icon,ro,ru])=>`<button class="tile" data-study-mode="${id}">${icon} ${studyText(ro,ru)}<small>${studyText('Materiale în pregătire','Материалы готовятся')}</small></button>`).join('')}</div><button class="pill gh" data-study="home">${studyText('← Acasă','← На главную')}</button>`,studyText('Pregătire','Подготовка'))}
 const studyCommunityHome=home;
-home=function(){studyCommunityHome();if(!U?.year||studyHasExams())return;const main=$('#main');main.insertAdjacentHTML('afterbegin',`<section id="cmb-level-slot">${cmbLevelCard()}</section><div class="path-note">${studyText('Același XP, aceleași niveluri și același Clasament CMB pentru toate grupele. XP se acordă pentru activități eligibile verificate pe server. Întrebările și bonusurile de examen vor deveni disponibile după publicarea materialelor secțiunii tale.','Единая система XP, уровней и рейтинга CMB для всех групп. XP начисляется за подходящие действия, проверенные сервером. Вопросы и экзаменационные бонусы станут доступны после публикации материалов вашего раздела.')}</div><button class="study-card" data-study-community="preparation"><span>📚</span><strong>${studyText('Toate modurile de pregătire','Все режимы подготовки')}</strong><span>→</span></button><section id="cmb-home">${cmbHome()}</section><div class="row"><button class="pill gh" data-cmb="achievements">${studyText('Realizările mele','Мои достижения')}</button><button class="pill gh" data-study-community="stats">${studyText('Statistici','Статистика')}</button></div>`);studyTranslate();cmbRefresh().then(studyTranslate).catch(()=>{})};
+home=function(){studyCommunityHome();if(!U?.year||studyHasExams())return;const main=$('#main');main.insertAdjacentHTML('afterbegin',`<section id="cmb-level-slot">${cmbLevelCard()}</section><div class="path-note">${studyText('Același XP, aceleași niveluri și același Clasament CMB pentru toate grupele. XP se acordă pentru activități eligibile verificate pe server. Întrebările și bonusurile de examen vor deveni disponibile după publicarea materialelor secțiunii tale.','Единая система XP, уровней и рейтинга CMB для всех групп. XP начисляется за подходящие действия, проверенные сервером. Проверенные задания и бонусы зависят от опубликованных материалов вашей группы.')}</div><button class="study-card" data-study-community="preparation"><span>📚</span><strong>${studyText('Toate modurile de pregătire','Все режимы подготовки')}</strong><span>→</span></button><section id="cmb-home">${cmbHome()}</section><div class="row"><button class="pill gh" data-cmb="achievements">${studyText('Realizările mele','Мои достижения')}</button><button class="pill gh" data-study-community="stats">${studyText('Statistici','Статистика')}</button></div>`);studyTranslate();cmbRefresh().then(studyTranslate).catch(()=>{})};
 const studySharedCalendar=cmbCalendar;
 cmbCalendar=async function(){if(studyHasExams())return studySharedCalendar();view(`<h1>${studyText('Calendarul meu de învățare','Мой учебный календарь')}</h1><div class="glass"><p>${studyText('Calendarul și planificarea sunt disponibile pentru toate grupele. Nu există încă examene în secțiunea ta; vei putea alege termene și genera planuri imediat ce sunt publicate materialele.','Календарь и планирование доступны всем группам. В вашем разделе пока нет экзаменов; выбор сроков и создание планов станут доступны после публикации материалов.')}</p></div><button class="pill gh" data-study="home">${studyText('← Acasă','← На главную')}</button>`,studyText('Calendarul meu','Мой календарь'))};
 const studySharedStats=stats;
@@ -1890,6 +1890,1678 @@ document.body.addEventListener('click',e=>{
   checkpoint();clearInterval(timer);AS=null;S={e:ex,mode:'ordered',exam:false,list,i:0,ans:{},chk:{},ok:{},hint:{},perm:list.map(i=>shuffle(ident(ex.q[i].o.length))),end:0};render();saveP();
  }
 });
+</script><script>const ANATOMY_RU_QUESTIONS=[
+  {
+    "n": 1,
+    "prompt": "Один из отростков лопатки:",
+    "answer": "клювовидный",
+    "paragraph": 2
+  },
+  {
+    "n": 2,
+    "prompt": "Укажите место, где чаще всего происходят переломы плечевой кости:",
+    "answer": "хирургическая шейка",
+    "paragraph": 3
+  },
+  {
+    "n": 3,
+    "prompt": "Локтевая кость находится со стороны:",
+    "answer": "мизинца",
+    "paragraph": 4
+  },
+  {
+    "n": 4,
+    "prompt": "Лучевая кость находится со стороны:",
+    "answer": "большого пальца",
+    "paragraph": 5
+  },
+  {
+    "n": 5,
+    "prompt": "Назовите кость, у которой различаем: основание, верхушку,поверхности: переднюю и заднюю, 2 боковые ушковидные поверхности",
+    "answer": "подвздошная кость",
+    "paragraph": 6,
+    "reviewOnly": true
+  },
+  {
+    "n": 6,
+    "prompt": "Какие из следующих костей входят в состав скелета стопы?",
+    "answer": "Предплюснапяточная кость\\ таранная кость \\ладьевидная кость \\медиальная клиновидная кость \\промежуточная клиновидная кость \\латеральная клиновидная кость \\кубовидная кость \\Плюсна \\Плюсневые кости \\Кости пальцев — по 5 пальцев на каждой стопе, по 3 фаланги в каждом пальце, кроме большого (I) пальца у которого 2 фаланги: проксимальная фаланга \\средняя фаланга\\ дистальная фаланга \\",
+    "paragraph": 8
+  },
+  {
+    "n": 7,
+    "prompt": "Какие из следующих костей принадлежит костям кисти?",
+    "answer": "Запястье \\ладьевидная кость \\полулунная кость \\трёхгранная кость \\гороховидная кость \\кость-трапеция \\трапециевидная кость \\головчатая кость \\крючковидная кость \\Пястье Пястные кости \\Кости пальцев — по 5 пальцев на каждой кисти, по 3 фаланги в каждом пальце, кроме большого пальца, у которого 2 фаланги: (большой палец, I ; указательный палец, II; средний палец, III ; безымянный палец, IV ; мизинец, V .проксимальная фаланга средняя фаланга дистальная фаланга",
+    "paragraph": 9
+  },
+  {
+    "n": 8,
+    "prompt": "В состав мозгового отдела черепа входят следующие кости, за исключением:",
+    "answer": "лобная кость \\теменная кость \\затылочная кость \\клиновидная кость \\височная кость \\решётчатая кость \\",
+    "paragraph": 10,
+    "reviewOnly": true
+  },
+  {
+    "n": 9,
+    "prompt": "Крестец имеет основные особенности:",
+    "answer": "крупная треугольная кость из 5 срастающихся позвонков",
+    "paragraph": 11
+  },
+  {
+    "n": 10,
+    "prompt": "Движения в суставах могут быть следующими, за исключением:",
+    "answer": "1. Вокруг фронтальной (поперечной) оси: сгибание (flexio) и разгибание (extensio). 2. Вокруг вертикальной оси: вращение (rotatio); вращение кнаружи (supinatio) и вращение внутрь (pronatio).",
+    "paragraph": 12,
+    "reviewOnly": true
+  },
+  {
+    "n": 11,
+    "prompt": "Остеон представляет собой:",
+    "answer": "Остео́н (от др. -греч. ὀστέον — «кость») или га́версова система — структурная единица компактного вещества пластинчатой кости, обеспечивающая её прочность.",
+    "paragraph": 13
+  },
+  {
+    "n": 12,
+    "prompt": "Рост кости в толщину происходит за счёт:",
+    "answer": "Надкостница – это соединительнотканная плёнка, покрывающая кость снаружи. Она пронизана кровеносными сосудами и обеспечивает питание и рост кости в толщину",
+    "paragraph": 14
+  },
+  {
+    "n": 13,
+    "prompt": "Выберите неправильный ответ. Передние и задние изгибы позвоночника называются:",
+    "answer": "правильный: лордоз и кифоз",
+    "paragraph": 15,
+    "reviewOnly": true
+  },
+  {
+    "n": 14,
+    "prompt": "В зависимости от формы и размера кости могут быть:",
+    "answer": "Длинные кости\\ Короткие кости\\ Плоские кости",
+    "paragraph": 16
+  },
+  {
+    "n": 15,
+    "prompt": "Найдите неправильную ассоциацию относительно количества костей, составляющих конечности:",
+    "answer": "64 — скелет верхних конечностей, 62 — скелет нижних конечностей.",
+    "paragraph": 17,
+    "reviewOnly": true
+  },
+  {
+    "n": 16,
+    "prompt": "Скелет выполняет несколько функций, за исключением:",
+    "answer": "ф-и скелета опорную, защитную, двигательную (локомоторную), рессорную, кроветворную и обменную",
+    "paragraph": 19,
+    "reviewOnly": true
+  },
+  {
+    "n": 17,
+    "prompt": "Назовите кость, у которой есть 3 края, 3 угла, 2 поверхности, отросток в виде клюва, вырезка, суставная впадина:",
+    "answer": "лопатка",
+    "paragraph": 20
+  },
+  {
+    "n": 18,
+    "prompt": "Скелет кисти состоит из костей:",
+    "answer": "кости запястья, кости пясти и кости пальцев (фаланги). 27 костей",
+    "paragraph": 22
+  },
+  {
+    "n": 19,
+    "prompt": "Скелет стопы состоит из костей:",
+    "answer": "26 костей предплюсна плюсна и фаланг пальцев стопы",
+    "paragraph": 23
+  },
+  {
+    "n": 20,
+    "prompt": "В состав мозгового отдела черепа входят следующие кости:",
+    "answer": "лобная кость \\теменная кость \\затылочная кость \\клиновидная кость \\височная кость \\решётчатая кость \\",
+    "paragraph": 24
+  },
+  {
+    "n": 21,
+    "prompt": "Скелет туловища образован:",
+    "answer": "Скелет туловища включает позвоночник, состоящий из 5 отделов: Шейный отдел — 7 позвонков. Грудной отдел — 12 позвонков. К первым 7 прикрепляются ребра, срастающиеся с грудиной.",
+    "paragraph": 25
+  },
+  {
+    "n": 22,
+    "prompt": "Нижние конечности соединяются с позвоночником с помощью:",
+    "answer": "Парные тазовые кости вместе с анатомическими образованиями, идущими от них и таза к бедренной кости и бедру, посредством которых происходит прикрепление ног к позвоночнику (крестцу), образуют тазовый пояс (пояс нижних конечностей).",
+    "paragraph": 26
+  },
+  {
+    "n": 23,
+    "prompt": "Кости запястья и предплюсны:",
+    "answer": "кисть: верхний: ладьевидная, полулунная, трёхгранная, гороховидная; нижний: кость-трапеция), трапециевидная, головчатая, крючковидная кости. Предплюсна : таранная пяточная ладьевидная кость; медиальная клиновидная кость промежуточная клиновидная кость латеральная клиновидная кость кубовидная кость . одинаковые: ладьеидная",
+    "paragraph": 27
+  },
+  {
+    "n": 24,
+    "prompt": "Позвонки с раздвоенными остистыми отростками:",
+    "answer": "шейные",
+    "paragraph": 28
+  },
+  {
+    "n": 25,
+    "prompt": "Мыс образован соединением:",
+    "answer": "крестца с 5 поясничным позвонком",
+    "paragraph": 29
+  },
+  {
+    "n": 26,
+    "prompt": "Межбугорковая борозда расположена на:",
+    "answer": "плечевой кости",
+    "paragraph": 30
+  },
+  {
+    "n": 27,
+    "prompt": "Клювовидный отросток расположен на:",
+    "answer": "лопатке",
+    "paragraph": 31
+  },
+  {
+    "n": 28,
+    "prompt": "Блоковидная вырезка расположена на:",
+    "answer": "Находится на проксимальном конце локтевой кости.",
+    "paragraph": 32
+  },
+  {
+    "n": 29,
+    "prompt": "Акромион находится",
+    "answer": "лопатке",
+    "paragraph": 33
+  },
+  {
+    "n": 30,
+    "prompt": "Акромион находится",
+    "answer": "лопатке",
+    "paragraph": 34
+  },
+  {
+    "n": 31,
+    "prompt": "Какие кости нижних конечностей сесамовидные:",
+    "answer": "таранная пяточная ладьевидная кость; медиальная клиновидная кость промежуточная клиновидная кость латеральная клиновидная кость кубовидная кость .",
+    "paragraph": 35,
+    "reviewOnly": true
+  },
+  {
+    "n": 32,
+    "prompt": "Какое анатомическое образование разделяет седалищные вырезки?",
+    "answer": "Седалищный бугор и седалищная ость",
+    "paragraph": 36,
+    "reviewOnly": true
+  },
+  {
+    "n": 33,
+    "prompt": "Соединения костей посредством волокнистой соединительной ткани:",
+    "answer": "синдесмозы",
+    "paragraph": 37
+  },
+  {
+    "n": 34,
+    "prompt": "Как называются движения вокруг фронтальной оси?",
+    "answer": "сгибание (flexio) и разгибание (extensio)",
+    "paragraph": 38
+  },
+  {
+    "n": 35,
+    "prompt": "Как называются движения вокруг сагиттальной оси?",
+    "answer": "отведение (abductio) и приведение (adductio)",
+    "paragraph": 39
+  },
+  {
+    "n": 36,
+    "prompt": "Соединения крестцовых позвонков:",
+    "answer": "при помощи временного синхондроза, переходящего с возрастом в синостоз",
+    "paragraph": 40
+  },
+  {
+    "n": 37,
+    "prompt": "Какой по форме плечевой сустав?",
+    "answer": "Плечевой сустав трехосный, по форме относится к шаровидным суставам.",
+    "paragraph": 41
+  },
+  {
+    "n": 38,
+    "prompt": "Нет тела у какого позвонка?",
+    "answer": "C1 Atlas- атлант",
+    "paragraph": 42
+  },
+  {
+    "n": 39,
+    "prompt": "Какой позвонок имеет сонный бугорок?",
+    "answer": "С6 так как к нему при необходимости может быть прижата общая сонная артерия",
+    "paragraph": 43
+  },
+  {
+    "n": 40,
+    "prompt": "Межбугорковая борозда расположена на:",
+    "answer": "плечевая кость",
+    "paragraph": 44
+  },
+  {
+    "n": 41,
+    "prompt": "Анатомические образования, расположенные на латеральных частях затылочной кости:",
+    "answer": "Здесь различают затылочный мыщелок ; подъязычный канал ; яремный отросток ; яремную вырезку ; борозду сигмо- видного синуса.",
+    "paragraph": 45
+  },
+  {
+    "n": 42,
+    "prompt": "Что представляют собой роднички?",
+    "answer": "Родничок — неокостеневший участок свода черепа, состоящий из остатков перепончатого скелета и соединяющий кости черепа новорождённых",
+    "paragraph": 46
+  },
+  {
+    "n": 43,
+    "prompt": "Овальное отверстие расположено на:",
+    "answer": "На крыловидной поверхности клиновидной поверхности Клиновидной кости  открываются овальное и остистое отверстия.",
+    "paragraph": 47
+  },
+  {
+    "n": 44,
+    "prompt": "Решётчатая вырезка принадлежит:",
+    "answer": "лобной кости",
+    "paragraph": 49
+  },
+  {
+    "n": 45,
+    "prompt": "Зрительный канал проходит через:",
+    "answer": "Зрительный канал - костный канал, соединяющий полость глазницы со средней черепной ямкой. Через него в глазницу проходит глазная артерия и выходит зрительный нерв.",
+    "paragraph": 50,
+    "reviewOnly": true
+  },
+  {
+    "n": 46,
+    "prompt": "Подъязычный канал проходит через:",
+    "answer": "Канал подъязычного нерва  - костный канал, расположенный в основании затылочного мыщелка; место прохождения подъязычного нерва.",
+    "paragraph": 51
+  },
+  {
+    "n": 47,
+    "prompt": "Барабанная часть ассоциируется с:",
+    "answer": "височной костью",
+    "paragraph": 52
+  },
+  {
+    "n": 48,
+    "prompt": "На верхушке глазницы находится:",
+    "answer": "На верхушке глазницы находится зрительный канал, через который выходят зрительный нерв и глазная артерия",
+    "paragraph": 53
+  },
+  {
+    "n": 49,
+    "prompt": "Узкое пространство между боковой и нижней стенкой глазницы - это:",
+    "answer": "нижняя глазничная щель",
+    "paragraph": 54
+  },
+  {
+    "n": 50,
+    "prompt": "Отверстие, ограниченное носовыми вырезками верхней челюсти, называется:",
+    "answer": "",
+    "paragraph": 55,
+    "reviewOnly": true
+  },
+  {
+    "n": 51,
+    "prompt": "Височная и затылочная кость ограничивают:",
+    "answer": "Соединяясь с одноименной вырезкой височной кости, яремная вырезка затылочной кости образует канал",
+    "paragraph": 56
+  },
+  {
+    "n": 52,
+    "prompt": "Нижнечелюстная ямка расположена на:",
+    "answer": "височной кости",
+    "paragraph": 57
+  },
+  {
+    "n": 53,
+    "prompt": "Угол грудины расположен:",
+    "answer": "на уровне межпозвоночного диска между телами IV и V грудных позвонков.",
+    "paragraph": 58
+  },
+  {
+    "n": 54,
+    "prompt": "Лопатка имеет следующие углы:",
+    "answer": "верхний и нижний",
+    "paragraph": 59,
+    "reviewOnly": true
+  },
+  {
+    "n": 55,
+    "prompt": "Выделите ямки лопатки, расположенные на дорсальной поверхности:",
+    "answer": "подостная надостная",
+    "paragraph": 60
+  },
+  {
+    "n": 56,
+    "prompt": "Структурными элементами ключицы являются:",
+    "answer": "см ключицу",
+    "paragraph": 61,
+    "reviewOnly": true
+  },
+  {
+    "n": 57,
+    "prompt": "На проксимальном эпифизе плечевой кости расположены следующие структурные элементы:",
+    "answer": "головкой плечевой кости отделённой от диафиза анатомической шейкой",
+    "paragraph": 62
+  },
+  {
+    "n": 58,
+    "prompt": "Элементы дистального эпифиза плечевой кости:",
+    "answer": "мыщелок и по бокам от него два надмыщелка — медиальный и латеральный",
+    "paragraph": 64
+  },
+  {
+    "n": 59,
+    "prompt": "Какие из перечисленных отростков принадлежат локтевой кости:",
+    "answer": "Локтевой отросток – наиболее выступающая часть локтевой кости, не защищенная мягкими тканями",
+    "paragraph": 65
+  },
+  {
+    "n": 60,
+    "prompt": "Проксимальный ряд костей запястья состоит из следующих костей:",
+    "answer": "ладьевидная, полулунная, трёхгранная и гороховидная.",
+    "paragraph": 66
+  },
+  {
+    "n": 61,
+    "prompt": "Дистальный ряд костей запястья состоит из следующих костей:",
+    "answer": "многоугольная, трапециевидная, головчатая и крючковидная",
+    "paragraph": 67
+  },
+  {
+    "n": 62,
+    "prompt": "На II, III, IV, V пальцах различаем фаланги:",
+    "answer": "У человека каждый палец, кроме большого, состоит из трёх фаланг, а большой - из двух (есть люди, у которых две фаланги и на мизинце, и это нормально). Эти три фаланги называются основной, средней и ногтевой.",
+    "paragraph": 68
+  },
+  {
+    "n": 63,
+    "prompt": "Грудина состоит из:",
+    "answer": "рукоятки, тела и мечевидного отростка.",
+    "paragraph": 69
+  },
+  {
+    "n": 64,
+    "prompt": "Скелет кисти состоит из:",
+    "answer": "Скелет кисти составляют кости запястья, кости пясти и кости пальцев (фаланги).",
+    "paragraph": 70
+  },
+  {
+    "n": 65,
+    "prompt": "По строению и форме кости подразделяются на:",
+    "answer": "трубчатые;губчатые;плоские (широкие);смешанные;воздухоносные (пневматические).",
+    "paragraph": 71
+  },
+  {
+    "n": 66,
+    "prompt": "Добавьте противоположные движения в суставах:",
+    "answer": "В суставах возможны движения вокруг трех осей: 1. Вокруг фронтальной (поперечной) оси: сгибание (flexio) и разгибание (extensio). 2. Вокруг вертикальной оси: вращение (rotatio); вращение кнаружи (supinatio) и вращение внутрь (pronatio).",
+    "paragraph": 72
+  },
+  {
+    "n": 67,
+    "prompt": "Выберите пневматические кости:",
+    "answer": "лобная, клиновидная, решётчатая и верхняя челюсть",
+    "paragraph": 73
+  },
+  {
+    "n": 68,
+    "prompt": "Кости скелета в соответствии с их формой",
+    "answer": "В скелете человека различают по форме длинные, короткие, плоские и смешанные кости, также есть кости пневматические и сесамовидные.",
+    "paragraph": 74
+  },
+  {
+    "n": 69,
+    "prompt": "Костная ткань состоит из следующих видов клеток:",
+    "answer": "Остеоциты Остеобласты Остеокласты",
+    "paragraph": 75
+  },
+  {
+    "n": 70,
+    "prompt": "Плоские кости:",
+    "answer": "плоским костям относятся кости свода черепа и лопатки, рёбра, тазовые кости. Основная функция плоских костей — механическая защита (полости черепа, грудной полости).",
+    "paragraph": 76
+  },
+  {
+    "n": 71,
+    "prompt": "Длинные трубчатые кости:",
+    "answer": "это, например, плечевая кость, бедренная кость, кости предплечья и кости голени.",
+    "paragraph": 77
+  },
+  {
+    "n": 72,
+    "prompt": "Рост кости в длину:",
+    "answer": "В длину кости растут за счет хрящей, которые расположены между телом кости и ее концами.",
+    "paragraph": 78
+  },
+  {
+    "n": 73,
+    "prompt": "Красный костный мозг находится в:",
+    "answer": "красный костный мозг находится в эпифизах трубчатых костей",
+    "paragraph": 79
+  },
+  {
+    "n": 74,
+    "prompt": "Длинные трубчатые кости:",
+    "answer": "это, например, плечевая кость, бедренная кость, кости предплечья и кости голени",
+    "paragraph": 80
+  },
+  {
+    "n": 75,
+    "prompt": "Строение C1 включает:",
+    "answer": "1 - поперечное отверстие на поперечном отростке; 2 - передняя дуга атланта; 3 - передний бугорок; 4 - ямка зуба; 5 - латеральная масса с верхней суставной поверхностью (6); 7 - задний бугорок; 8 - задняя дуга; 9 - борозда позвоночной артерии;",
+    "paragraph": 81
+  },
+  {
+    "n": 76,
+    "prompt": "Они сращены в одну кость:",
+    "answer": "кости таза подвздошная седалищная лобкоая",
+    "paragraph": 82
+  },
+  {
+    "n": 77,
+    "prompt": "Изгибы позвоночного столба в сагиттальной плоскости:",
+    "answer": "шейный лордоз, грудной кифоз, поясничный лордоз и крестцово-копчиковый изгиб",
+    "paragraph": 83
+  },
+  {
+    "n": 78,
+    "prompt": "Перечислите части ребра:",
+    "answer": "заднюю, на которой имеются головка шейка, продольный гребешок  и бугорок тело ребра ;переднюю, переходящую в хрящевую часть",
+    "paragraph": 84
+  },
+  {
+    "n": 79,
+    "prompt": "Верхняя апертура грудной клетки ограничена следующими костями:",
+    "answer": "Верхняя апертура грудной клетки (apertura thoracis superior) ограничена сзади I грудным позвонком, спереди - яремной вырезкой рукоятки грудины и латерально - I парой ребер.",
+    "paragraph": 85
+  },
+  {
+    "n": 80,
+    "prompt": "Образования, ограничивающие нижнюю апертуру грудной клетки:",
+    "answer": "Нижнее отверстие больше верхнего, оно ограничено телом XII грудного позвонка, XI и XII рёбрами и рёберными дугами, мечевидным отростком и закрывается диафрагмой.",
+    "paragraph": 86
+  },
+  {
+    "n": 81,
+    "prompt": "Кости с их расположением:",
+    "answer": "см тг",
+    "paragraph": 87,
+    "reviewOnly": true
+  },
+  {
+    "n": 82,
+    "prompt": "Анатомические образования дорсальной поверхности лопатки:",
+    "answer": "Задняя поверхность лопатки выпуклая, она разделена на две неравные части массивным костным выступом — остью. Область над остью получила название надостной ямки, область под остью называется подостной ямкой.",
+    "paragraph": 88
+  },
+  {
+    "n": 83,
+    "prompt": "Структурные элементы проксимального эпифиза плечевой кости:",
+    "answer": "Проксимальный эпифиз представлен головкой плечевой кости (лат. caput humeri), отделённой от диафиза анатомической шейкой (лат. collum anatomicum). Головка сочленяется с суставной впадиной лопатки, образуя плечевой сустав.",
+    "paragraph": 89
+  },
+  {
+    "n": 84,
+    "prompt": "Анатомические образования дистального эпифиза плечевой кости:",
+    "answer": "Дистальный эпифиз называется мыщелком, на нем расположены: блок плечевой кости, головка мыщелка плечевой кости, ямка локтевого отростка, - венечная ямка, лучевая ямка (над головкой мыщелка – передняя поверхность), суставные поверхности.",
+    "paragraph": 90
+  },
+  {
+    "n": 85,
+    "prompt": "Структурные элементы проксимального эпифиза локтевой кости:",
+    "answer": "Проксимальный утолщенный эпифиз локтевой кости разделяется на два отростка: задний, более толстый локтевой отросток, и передний, небольшой, венечный отросток. Между ними находится блоковидная вырезка, служащая для сочленения с блоком плечевой кости.",
+    "paragraph": 91
+  },
+  {
+    "n": 86,
+    "prompt": "Структурные элементы дистального эпифиза лучевой кости:",
+    "answer": "На дистальном (нижнем) конце лучевой кости, с её медиальной стороны, имеется локтевая вырезка с которой соединяется головка локтевой кости. С латеральной стороны кости к низу отходит шиловидный отросток",
+    "paragraph": 92
+  },
+  {
+    "n": 87,
+    "prompt": "Пястная кость состоит из:",
+    "answer": "В пястных костях различают основание (лат. basis), тело (лат. corpus) и головку (лат. caput).5 костей",
+    "paragraph": 93
+  },
+  {
+    "n": 88,
+    "prompt": "Головка и шейка- это структурные элементы:",
+    "answer": "бедренная\\ лучевая\\ плечевая",
+    "paragraph": 94
+  },
+  {
+    "n": 89,
+    "prompt": "Тазовая кость состоит из:",
+    "answer": "подвздошной\\ седалищной\\ лобковой",
+    "paragraph": 95
+  },
+  {
+    "n": 90,
+    "prompt": "Структурные элементы подвздошной кости:",
+    "answer": "тело и крыло",
+    "paragraph": 96
+  },
+  {
+    "n": 91,
+    "prompt": "Структурные элементы проксимального эпифиза бедренной кости:",
+    "answer": "На проксимальном эпифизе бедренной кости различают головку; шейку; большой и малый вертелы, спереди соединенные межвертельной линией, а сзади межвертельным гребенем",
+    "paragraph": 97
+  },
+  {
+    "n": 92,
+    "prompt": "Структурные элементы дистального эпифиза бедренной кости:",
+    "answer": "надмыщелок ( мед и лат) поерхность",
+    "paragraph": 98
+  },
+  {
+    "n": 93,
+    "prompt": "Какие из перечисленных костей имеют лодыжки?",
+    "answer": "Латеральная лодыжка — дистальный отдел малоберцовой кости. Медиальная лодыжка — отросток дистального отдела большеберцовой кости.",
+    "paragraph": 99
+  },
+  {
+    "n": 94,
+    "prompt": "Проксимальный ряд предплюсны образован:",
+    "answer": "2 большие кости - таранная и пяточная.",
+    "paragraph": 100
+  },
+  {
+    "n": 95,
+    "prompt": "Дистальный ряд предплюсны состоит из:",
+    "answer": "ладьевидная кость; медиальная клиновидная кость; промежуточная клиновидная кость; латеральная клиновидная кость; кубовидная кость",
+    "paragraph": 101
+  },
+  {
+    "n": 96,
+    "prompt": "Укажите основные (обязательные) элементы диартроза (сустава):",
+    "answer": "суставные поверхности, покрытые хрящом Суставная полость; суставная капсула; синовиальная оболочка; синовиальная жидкость.",
+    "paragraph": 102
+  },
+  {
+    "n": 97,
+    "prompt": "Укажите вспомогательные (дополнительные) элементы диартроза (сустава):",
+    "answer": "связки, суставные диски, мениски",
+    "paragraph": 103
+  },
+  {
+    "n": 98,
+    "prompt": "На какие группы делятся суставы в зависимости от формы суставных поверхностей?",
+    "answer": "цилиндрический, блоковидный, эллипсовидный, шаровидный, плоский",
+    "paragraph": 104
+  },
+  {
+    "n": 99,
+    "prompt": "На какие группы делятся суставы по количеству осей, вокруг которых они выполняют движения?",
+    "answer": "одно-, двух- и трех- (многоосные) суставы.",
+    "paragraph": 105
+  },
+  {
+    "n": 100,
+    "prompt": "Какие отростки есть у позвонков?",
+    "answer": "остистый отросток; поперечные отростки; суставные отростки",
+    "paragraph": 107
+  },
+  {
+    "n": 101,
+    "prompt": "Для типичных шейных позвонков характерно:",
+    "answer": "1) наличие поперечного отверстия в поперечном отростке, через которое проходит артерия, участвующая в питании головного мозга; 2) остистый отросток на конце раздвоен; 3) большое позвоночное отверстие, близкое к треугольной форме; 4) малые размеры позвонков; 5) верхняя поверхность тела позвонка вогнута в поперечном направлении, а нижняя – в передне-заднем.",
+    "paragraph": 108
+  },
+  {
+    "n": 102,
+    "prompt": "Образования, характерные только для грудных позвонков:",
+    "answer": "Тело первого грудного позвонка, которое имеет сверху полную реберную ямку, сочленяющуюся с головкой первого ребра, и снизу полуямку, сочленяющуюся с головкой второго ребра;",
+    "paragraph": 109
+  },
+  {
+    "n": 103,
+    "prompt": "Какие из данных костей имеют шиловидный отросток?",
+    "answer": "шиловидный отросток расположен с наружной стороны дистального конца лучевой кости.",
+    "paragraph": 110,
+    "reviewOnly": true
+  },
+  {
+    "n": 104,
+    "prompt": "Какие из позвонков имеют особые названия?",
+    "answer": "Первые два позвонка шейного отдела, атлант (лат. Atlas) и эпистрофей (лат. Axis)",
+    "paragraph": 111
+  },
+  {
+    "n": 105,
+    "prompt": "Истинные рёбра:",
+    "answer": "первые 7 пар",
+    "paragraph": 112
+  },
+  {
+    "n": 106,
+    "prompt": "Ложные рёбра:",
+    "answer": "8,9,10 пары",
+    "paragraph": 113
+  },
+  {
+    "n": 107,
+    "prompt": "Кости мозгового отдела черепа:",
+    "answer": "лобной, двух теменных, затылочной, двух височных, клиновидной и решетчатой.",
+    "paragraph": 114
+  },
+  {
+    "n": 108,
+    "prompt": "Какие кости черепа содержат полости с воздухом?",
+    "answer": "лобная, решётчатая, клиновидная, височная и верхняя челюсть",
+    "paragraph": 115
+  },
+  {
+    "n": 109,
+    "prompt": "Отметьте основные части лобной кости:",
+    "answer": "лобная чешуя (squama frontalis) (1), глазничные части (partes orbitales) (2) и носовая часть (pars nasalis) (3).",
+    "paragraph": 116
+  },
+  {
+    "n": 110,
+    "prompt": "Анатомические образования, расположенные на наружной поверхности чешуи лобной кости:",
+    "answer": "лобный бугор; глабелла); надбровная дуга; надглазничный край; лобная вырезка (отверстие); надглазничная вырезка (отверстие); скуловой отросток; височная линия.",
+    "paragraph": 117
+  },
+  {
+    "n": 111,
+    "prompt": "Выделите основные части затылочной кости:",
+    "answer": "затылочная чешуя;латеральные массы, или мыщелки ;тело",
+    "paragraph": 119
+  },
+  {
+    "n": 112,
+    "prompt": "Выделите основные части клиновидной кости:",
+    "answer": "Состоит из тела, двух пар крыльев (малые крылья и большие крылья ) и крыловидных отростков",
+    "paragraph": 120
+  },
+  {
+    "n": 113,
+    "prompt": "Основание черепа делится на:",
+    "answer": "лобной, решетчатой, клиновидной, затылочной и височной костей.",
+    "paragraph": 121
+  },
+  {
+    "n": 114,
+    "prompt": "Кости лицевого отдела черепа:",
+    "answer": "верхняя челюсть, носовая, скуловая, слезная и небная кости, а также нижняя носовая раковина. Три кости непарные: нижняя челюсть, сошник и подъязычная кость.",
+    "paragraph": 122
+  },
+  {
+    "n": 115,
+    "prompt": "Непарные кости мозгового отдела черепа:",
+    "answer": "затылочная, лобная, клиновидная, решётчатая кости.",
+    "paragraph": 123
+  },
+  {
+    "n": 116,
+    "prompt": "К пневматическим костям относятся:",
+    "answer": "лобная, клиновидная, решётчатая и верхняя челюсть",
+    "paragraph": 124
+  },
+  {
+    "n": 117,
+    "prompt": "Свод черепа образован:",
+    "answer": "Образован лобной чешуей, теменными костями, верхним отделом затылочной чешуи, чешуями височных костей и верхним отделом большого крыла клиновидной кости.",
+    "paragraph": 125
+  },
+  {
+    "n": 118,
+    "prompt": "Структурные элементы лобной кости:",
+    "answer": "лобная чешуя, глазничные части и носовая часть. 1. Лобная чешуя (непарная) имеет наружную поверхность и внутреннюю поверхность.",
+    "paragraph": 126
+  },
+  {
+    "n": 119,
+    "prompt": "Части решётчатой кости:",
+    "answer": "вертикальная пластинка, горизонтальная пластинка и две латеральные массы, подвешенные к горизонтальной пластинке",
+    "paragraph": 127
+  },
+  {
+    "n": 120,
+    "prompt": "Какие носовые раковины принадлежат решётчатой кости?",
+    "answer": "Медиальная поверхность обращена в полость носа и несёт на себе носовые раковины: среднюю), верхнюю и (вариант) наивысшую",
+    "paragraph": 128
+  },
+  {
+    "n": 121,
+    "prompt": "Части височной кости:",
+    "answer": "чешуйчатую, барабанную, каменистую",
+    "paragraph": 129
+  },
+  {
+    "n": 122,
+    "prompt": "Отростки височной кости:",
+    "answer": "шиловидный и сосцеидный",
+    "paragraph": 130
+  },
+  {
+    "n": 123,
+    "prompt": "Образования нёбной кости:",
+    "answer": "клиновидный, глазничный, пирамидальный",
+    "paragraph": 131
+  },
+  {
+    "n": 124,
+    "prompt": "Костная перегородка носа образована:",
+    "answer": "образована перпендикулярной пластинкой решетчатой кости и сошником",
+    "paragraph": 132
+  },
+  {
+    "n": 125,
+    "prompt": "У верхней челюсти есть:",
+    "answer": "тело верхней челюсти; передняя поверхность тела; задняя поверхность тела; глазничная поверхность тела (образует нижнюю стенку глазной впадины); подглазничная борозда; подглазничный канал подглазничное отверстие; апертура пазухи верхней челюсти, или апертура гайморовой пазухи; альвеолярный отросток; альвеолярная дуга; зубные альвеолы; межальвеолярные перегородки; альвеолярные возвышения; скуловой отросток; лобный отросток; слезная борозда; носовой гребень; решетчатый гребень ; подглазничное отверстие \\небный отросток; носовая передняя ость; носовой гребень; небные борозды; небные ости; резцовый шов; резцовая ямка; резцовое отверстие; срединный небный шов",
+    "paragraph": 133
+  },
+  {
+    "n": 126,
+    "prompt": "Отростки верхней челюсти:",
+    "answer": "4 отростка: лобный отросток, альвеолярный отросток, небный отросток , скуловой отросток.",
+    "paragraph": 134
+  },
+  {
+    "n": 127,
+    "prompt": "У нижней челюсти есть:",
+    "answer": "альвеолярная часть— край тела челюсти, где расположены ячейки зубов; тело нижней челюсти; подбородочное отверстие; нижнечелюстной канал; угол нижней челюсти; ветви нижней челюсти; мыщелковые отростки; венечные отростки; нижнечелюстное отверстие; головка нижней челюсти.",
+    "paragraph": 135
+  },
+  {
+    "n": 128,
+    "prompt": "Верхняя челюсть:",
+    "answer": "maxilla",
+    "paragraph": 136
+  },
+  {
+    "n": 129,
+    "prompt": "Нижняя челюсть:",
+    "answer": "mandibula",
+    "paragraph": 137
+  },
+  {
+    "n": 130,
+    "prompt": "Какие кости образуют костное нёбо?",
+    "answer": "образовано соединенными между собой срединным нёбным швом нёбными отростками правой и левой верхних челюстей, а также горизонтальными пластинками нёбных костей",
+    "paragraph": 138
+  },
+  {
+    "n": 131,
+    "prompt": "Каким отделам позвоночника характерен физиологический лордоз?",
+    "answer": "поясничный и шейный отдел",
+    "paragraph": 139
+  },
+  {
+    "n": 132,
+    "prompt": "Каким отделам позвоночника характерен физиологический кифоз?",
+    "answer": "грудной и кресцовый отдел",
+    "paragraph": 140
+  },
+  {
+    "n": 133,
+    "prompt": "Укажите кости, участвующие в формировании коленного сустава:",
+    "answer": "бедренной кости; большеберцовой; коленной чашечки (надколенника).",
+    "paragraph": 141
+  },
+  {
+    "n": 134,
+    "prompt": "Поперечно-полосатые мышцы прикрепляются с помощью:",
+    "answer": "связок сухожилий фасций мышечных веретен",
+    "paragraph": 142
+  },
+  {
+    "n": 135,
+    "prompt": "К гладким мышцам относятся:",
+    "answer": "желудка, кишечника, матки, мочевого пузыря и др., а также большинства кровеносных сосудов.",
+    "paragraph": 143
+  },
+  {
+    "n": 136,
+    "prompt": "Мышцы головы в зависимости от выполняемой ими деятельности делятся на:",
+    "answer": "делятся на мимические (мышцы лица) и жевательные мышцы",
+    "paragraph": 144
+  },
+  {
+    "n": 137,
+    "prompt": "На передней поверхности плеча расположена мышца:",
+    "answer": "двуглавая мышца",
+    "paragraph": 145
+  },
+  {
+    "n": 138,
+    "prompt": "К передней группе мышц плеча относятся все, кроме:",
+    "answer": "трехглавой и локтевой мышцы",
+    "paragraph": 146
+  },
+  {
+    "n": 139,
+    "prompt": "В сухожильном центре диафрагмы находится:",
+    "answer": "отверстие неправильной четырехугольной формы, через которое проходит нижняя полая вена",
+    "paragraph": 147
+  },
+  {
+    "n": 140,
+    "prompt": "Образует контур плеча:",
+    "answer": "дельтовидная мышца",
+    "paragraph": 148
+  },
+  {
+    "n": 141,
+    "prompt": "Место прикрепления трёхглавой мышцы голени:",
+    "answer": "бугор пяточной кости",
+    "paragraph": 149
+  },
+  {
+    "n": 142,
+    "prompt": "Отметьте медиальную группу мышц бедра:",
+    "answer": "Медиальную группу мышц составляют: 1) нежная (тонкая, стройная) мышца, 2) длинная приводящая мышца, 3) короткая приводя- щая мышца, 4. Большая приводящая мышца, 5) гребешковая мышца.",
+    "paragraph": 150
+  },
+  {
+    "n": 143,
+    "prompt": "Установите связь между движениями в суставах с движениями- антагонистами:",
+    "answer": "",
+    "paragraph": 151,
+    "reviewOnly": true
+  },
+  {
+    "n": 144,
+    "prompt": "Установите связь между терминами мимические мышцы, трапециевидная мышца, жевательные мышцы, круговая мышца рта, мышцы шеи, височная мышца, мышцы спины ,лестничные мышцы",
+    "answer": "",
+    "paragraph": 152,
+    "reviewOnly": true
+  },
+  {
+    "n": 145,
+    "prompt": "Отметьте мышцы, которые прикрепляются к нижней челюсти:",
+    "answer": "1) собственно жевательная мышца, 2) височная мышца и 3 медиальная крыловидная мышца.",
+    "paragraph": 155
+  },
+  {
+    "n": 146,
+    "prompt": "Установите связь между формами мышц и их названиями:",
+    "answer": "прямая мышца — с прямыми параллельными волокнами; поперечная мышца — с поперечными волокнами; круговая мышца — с круговыми волокнами; косая мышца — с косыми волокнами: одноперистая — косые волокна прикрепляются к сухожилию с одной стороны;",
+    "paragraph": 156
+  },
+  {
+    "n": 147,
+    "prompt": "Отметьте мышцы, которые не покрыты фасцией:",
+    "answer": "мимические мышцы",
+    "paragraph": 157
+  },
+  {
+    "n": 148,
+    "prompt": "Выделите мимические мышцы:",
+    "answer": "Лобная мышца\\ Круговая мышца глаза\\ Мышца гордецов\\ Мышца, сморщивающая бровь\\ Большая и малая скуловые мышцы\\ Мышца смеха\\ Мышца, опускающая угол рта\\ Круговая мышца рта\\ Мышца, поднимающая верхнюю губу и мышца, опускающая нижнюю губу\\ Подбородочная мышца\\ Поверхностная мышца шеи",
+    "paragraph": 158
+  },
+  {
+    "n": 149,
+    "prompt": "Отметьте жевательные мышцы:",
+    "answer": "Жевательная мышца\\Височная мышца\\Медиальная крыловидная мышца\\Латеральная крыловидная мышца",
+    "paragraph": 159
+  },
+  {
+    "n": 150,
+    "prompt": "Портняжная мышца:",
+    "answer": "мышца передней группы бедра, самая длинная",
+    "paragraph": 160
+  },
+  {
+    "n": 151,
+    "prompt": "Выделите вспомогательные элементы мышц:",
+    "answer": "фасции, удерживатели мышц, синови- альные влагалища сухожилий, синовиальные сумки, сесамовидные кости, блоки",
+    "paragraph": 161
+  },
+  {
+    "n": 152,
+    "prompt": "Расположите мышцы спины:",
+    "answer": "поверхностные мышцы , глубокие мышцы Поверхностные мышцы спины. 1 – трапециевидная мышца; 2 – широчайшая мышца спины. Глубокие мышцы спины. Латеральный тракт. 1 – подвздошно-реберная мышца; 2 – длиннейшая мышца спины; 3 – остистая мышца Глубокие мышцы спины. Медиальный тракт. 1 – многораздельные мышцы; 2 – мышцы – вращатели; 3 – полуостистые мышцы.",
+    "paragraph": 162
+  },
+  {
+    "n": 153,
+    "prompt": "Отметьте мышцы, которые НЕ принадлежат к мышцам плечевого пояса:",
+    "answer": "К мышцам плечевого пояса относятся: 1) дельтовидная, 2) надостная, 3) подостная, 4) малая круглая, 5) большая круглая, 6) подло- паточная мышца. кисти.",
+    "paragraph": 174
+  },
+  {
+    "n": 154,
+    "prompt": "Укажите основные части скелетных мышц:",
+    "answer": "Составляющими скелетной мышцы являются: поперечно-полосатая мышечная ткань, рыхлая и плотная соединительные ткани, а также нервная ткань. Лимфатические и кровеносные сосуды состоят из соединительной ткани, гладкой мышечной ткани и эндотелия.",
+    "paragraph": 175
+  },
+  {
+    "n": 155,
+    "prompt": "Диафрагма состоит из следующих частей:",
+    "answer": "В диафрагме различают поясничную, рёберную и грудинную части.",
+    "paragraph": 176
+  },
+  {
+    "n": 156,
+    "prompt": "Укажите поверхностные мышцы спины:",
+    "answer": "Поверхностные мышцы спины.1 – трапециевидная мышца;2 – широчайшая мышца спины.",
+    "paragraph": 177
+  },
+  {
+    "n": 157,
+    "prompt": "Обозначьте глубокие мышцы спины:",
+    "answer": "Глубокие мышцы спины. Латеральный тракт.1 – подвздошно-реберная мышца;2 – длиннейшая мышца спины;3 – остистая мышца Глубокие мышцы спины. Медиальный тракт.1 – многораздельные мышцы;2 – мышцы – вращатели;3 – полуостистые мышцы.",
+    "paragraph": 178
+  },
+  {
+    "n": 158,
+    "prompt": "Прямая мышца живота:",
+    "answer": "Прямая мышца живота— парная плоская длинная лентовидной формы мышца, широкая вверху и суженная внизу, располагается сбоку от срединной линии. Обе прямые мышцы отделены друг от друга белой линией живота.",
+    "paragraph": 180
+  },
+  {
+    "n": 159,
+    "prompt": "Паховый канал:",
+    "answer": "Паховый канал, canalis inguinalis, имеет вид щели в нижнем отделе брюшной стенки. Он содержит у мужчин семенной канатик, funiculus spermaticus, у женщин - круглую связку матки, lig. teres uteri. Канал имеет косое направление. От поверхностного пахового кольца, располагающегося над передним отделом верхней ветви лобковой кости, канал направляется косо латерально кверху и несколько назад к глубокому паховому кольцу, которое находится на 1-1,5 см выше середины паховой связки; длина канала 4-5см.Стенками пахового канала являются:а) передняя - апоневроз наружной косой мышцы живота б) задняя - поперечная фасция живота;в) нижняя - желоб паховой связки;г) верхняя -нижние края внутренней косой и поперечной мышц живота.",
+    "paragraph": 181
+  },
+  {
+    "n": 160,
+    "prompt": "Группа мышц плечевого пояса включает:",
+    "answer": "1) дельтовидная, 2) надостная, 3) подостная, 4) малая круглая, 5) большая круглая, 6) подло- паточная мышца. кисти.",
+    "paragraph": 182
+  },
+  {
+    "n": 161,
+    "prompt": "Функции передней группы мышц плеча:",
+    "answer": "сгибание",
+    "paragraph": 183
+  },
+  {
+    "n": 162,
+    "prompt": "Мышцы задней группы плеча выполняют:",
+    "answer": "разгибание",
+    "paragraph": 184
+  },
+  {
+    "n": 163,
+    "prompt": "Передняя группа мышц бедра:",
+    "answer": "промежуточная широкая мышца медиальная широкая мышца латеральная широкая мышца прямая мышца бедра четырёхглавая мышца бедра (портняжная мышца?)",
+    "paragraph": 185,
+    "reviewOnly": true
+  },
+  {
+    "n": 164,
+    "prompt": "Задняя группа мышц бедра:",
+    "answer": ", подколенная мышца, двуглавая мышца бедра, полуперепончатая мышца, полусухожильная мышца",
+    "paragraph": 186,
+    "reviewOnly": true
+  },
+  {
+    "n": 165,
+    "prompt": "Мышцы бедра, передняя группа:",
+    "answer": "промежуточная широкая мышца медиальная широкая мышца латеральная широкая мышца прямая мышца бедра четырёхглавая мышца бедра (портняжная мышца?)",
+    "paragraph": 187,
+    "reviewOnly": true
+  },
+  {
+    "n": 166,
+    "prompt": "Мышцы бедра, задняя группа:",
+    "answer": "подколенная мышца, двуглавая мышца бедра, полуперепончатая мышца, полусухожильная мышца",
+    "paragraph": 188,
+    "reviewOnly": true
+  },
+  {
+    "n": 167,
+    "prompt": "Гортань расположена у взрослых людей на уровне позвонков:",
+    "answer": "IV-VI шейных позвонков",
+    "paragraph": 189
+  },
+  {
+    "n": 168,
+    "prompt": "К какому хрящу относится выступ гортани (кадык):",
+    "answer": "щитовидный хрящ",
+    "paragraph": 190
+  },
+  {
+    "n": 169,
+    "prompt": "Выделите орган, прилегающий к щитовидной железе:",
+    "answer": "гортани или верхняя часть трахеи",
+    "paragraph": 191
+  },
+  {
+    "n": 170,
+    "prompt": "Дыхательные пути изнутри покрыты:",
+    "answer": "мерцательным эпителием с ворсинками",
+    "paragraph": 192
+  },
+  {
+    "n": 171,
+    "prompt": "Обонятельная область носа расположена в:",
+    "answer": "Расположена на латеральной стенке полости носа книзу от lamina cribrosa, а также в верхних отделах перегородки",
+    "paragraph": 193
+  },
+  {
+    "n": 172,
+    "prompt": "Доля лёгкого:",
+    "answer": "см практическую дых систему",
+    "paragraph": 194,
+    "reviewOnly": true
+  },
+  {
+    "n": 173,
+    "prompt": "Легочной ацинус:",
+    "answer": "Ацинус лёгкого — структурная единица лёгких, первичная лёгочная долька. См тетр",
+    "paragraph": 195
+  },
+  {
+    "n": 174,
+    "prompt": "Голосовые связки проходят между хрящами:",
+    "answer": "Они натянуты с каждой стороны между голосовым отростком Черпаловидного хряща и внутренней поверхностью угла (место схождения пластин) щитовидного хряща",
+    "paragraph": 196
+  },
+  {
+    "n": 175,
+    "prompt": "Структурно-функциональная единица лёгкого представлена:",
+    "answer": "ацинус",
+    "paragraph": 197
+  },
+  {
+    "n": 176,
+    "prompt": "Определите правильное расположение бифукации трахеи у взрослых:",
+    "answer": "Бифуркация трахеи, место разделения её на главные бронхи, располагается на уровне верхнего края V грудного позвонка.",
+    "paragraph": 198
+  },
+  {
+    "n": 177,
+    "prompt": "Средний носовой ход сообщается с:",
+    "answer": "сообщается с околоносовыми пазухами",
+    "paragraph": 199
+  },
+  {
+    "n": 178,
+    "prompt": "Выберите хрящи носа:",
+    "answer": "парные хрящи образующие боковые стенки: латеральные хрящи, большие хрящи крыльев носа состоящие из медиальной и латеральной ножек, 2-3 пары малых хрящей крыльев носа, у некоторых людей могут быть ещё небольшие добавочные хрящи носа, передняя часть непарного хряща перегородки носа.",
+    "paragraph": 200
+  },
+  {
+    "n": 179,
+    "prompt": "В каких отделах расположены: подголосовая полость , преддверие гортани, межжелудочковый отдел",
+    "answer": "Верхний отдел, или преддверие гортани",
+    "paragraph": 201,
+    "reviewOnly": true
+  },
+  {
+    "n": 180,
+    "prompt": "Установите парные и непарные хрящи гортани:",
+    "answer": "к непарным хрящам относят:1. щитовидный хрящ2. перстневидный хрящ 3. надгортанный хрящ К парным хрящам относят:1. черпаловидные хрящи2. рожковидные хрящи 3. клиновидные хрящи",
+    "paragraph": 203
+  },
+  {
+    "n": 181,
+    "prompt": "Определите части наружного носа:",
+    "answer": "включает корень, спинку, верхушку, крылья носа и ноздри",
+    "paragraph": 205
+  },
+  {
+    "n": 182,
+    "prompt": "Определите дыхательные пути:",
+    "answer": "верхние, нижние. Верхние дыхательные пути включают носовую полость, околоносовые пазухи, глотку и часть гортани над голосовыми связками. Нижние дыхательные пути включают гортань ниже голосовых связок, трахею, бронхи, бронхиолы и легкие.",
+    "paragraph": 206
+  },
+  {
+    "n": 183,
+    "prompt": "Определите функции гортани:",
+    "answer": "Гортань выполняет в организме 3 функции: дыхательную (как привратник нижних дыхательных путей гортань обеспечивает возможность дыхания); защитную (предотвращает попадание пищи в трахею); голосообразующую (отвечает за формирование голоса и звуков).",
+    "paragraph": 207
+  },
+  {
+    "n": 184,
+    "prompt": "Отметьте разветвления бронхов:",
+    "answer": "Каждый из главных бронхов, вступая через ворота легких в соответствующее легкое, ветвится на долевые бронхи. Правый бронх дает 3 долевых бронха, из которых один следует выше артерии, а 2 других – ниже артерии. Левый бронх дает два долевых бронха, располагающихся под артерией. Каждая из ветвей приносит воздух к долям легких. Долевые бронхи в свою очередь делятся на сегментарные бронхи. Каждый сегментарный бронх как в правом, так и в левом легком дихотомически делится, при этом ветви бронхов уменьшаются в диаметре и становятся мелкими бронхами; таких ветвлений насчитывается 9–10 порядков. Мелкие разветвления диаметром около 1 мм – бронхиолы.",
+    "paragraph": 211
+  },
+  {
+    "n": 185,
+    "prompt": "Определите функции дыхательной системы:",
+    "answer": "Функции дыхательной системы Основные функции — дыхание, газообмен. Кроме того, дыхательная система участвует в таких важных функциях, как терморегуляция, голосообразование, обоняние, увлажнение вдыхаемого воздуха.",
+    "paragraph": 213
+  },
+  {
+    "n": 186,
+    "prompt": "Дыхательные пути пересекаются с пищеварительными в:",
+    "answer": "в глотке",
+    "paragraph": 214
+  },
+  {
+    "n": 187,
+    "prompt": "Дыхательные пути выполняют следующие функции:",
+    "answer": "Основные функции — дыхание, газообмен. Кроме того, дыхательная система участвует в таких важных функциях, как терморегуляция, голосообразование, обоняние, увлажнение вдыхаемого воздуха.",
+    "paragraph": 215
+  },
+  {
+    "n": 188,
+    "prompt": "Верхние дыхательные пути включают:",
+    "answer": "это полость носа, носовая и ротовая часть глотки",
+    "paragraph": 216
+  },
+  {
+    "n": 189,
+    "prompt": "В наружном носе выделяют следующие элементы:",
+    "answer": "корень, спинку, верхушку, крылья носа и ноздри,",
+    "paragraph": 217
+  },
+  {
+    "n": 190,
+    "prompt": "К придаточным (околоносовым) пазухам носа относятся:",
+    "answer": "К придаточным пазухам носа относят гайморовые (верхнечелюстные) пазухи, решетчатый лабиринт, лобную пазуху, а также основную (клиновидную).",
+    "paragraph": 218
+  },
+  {
+    "n": 191,
+    "prompt": "Выберите варианты в соответствии с топографией гортани:",
+    "answer": "см тетрадь",
+    "paragraph": 219,
+    "reviewOnly": true
+  },
+  {
+    "n": 192,
+    "prompt": "Дыхательные пути:",
+    "answer": "внегрудные до плеча, внутригрудные после плеча",
+    "paragraph": 220,
+    "reviewOnly": true
+  },
+  {
+    "n": 193,
+    "prompt": "Главные бронхи внутри легочной ткани дают следующие ветви (расположите в  порядке ветвления бронхиального дерева):",
+    "answer": "Бронхиальное дерево представляет собой систему бронхов, по которым из трахеи воздух достигает легких. У бронхиального дерева есть главные бронхи, то есть правый и левый, а также долевые бронхи первого порядка, зональные бронхи второго порядка, мелкие бронхи 6-15 порядка, ну и терминальные, то есть конечные бронхиолы. В одном легком у здорового взрослого человека может присутствовать до двадцати трех генераций ветвлений бронхов и альвеолярных ходов. У конечных бронхов генерация соответствует шестнадцатому номеру. Непосредственно за функцию газообмена отвечают респираторные отделы легкого, что разместились за терминальными бронхиолами.",
+    "paragraph": 221
+  },
+  {
+    "n": 194,
+    "prompt": "Назовите виды плевры:",
+    "answer": "висцеральная плевра покрывает легкие и проникает в щели между долями легких париетальная плевра выстилает стенки грудной полости, в зависимости от чего выделяют: реберную (костальную) плевру диафрагмальную плевру медиастинальную плевру",
+    "paragraph": 222
+  },
+  {
+    "n": 195,
+    "prompt": "Характеристика наружного носа:",
+    "answer": "Наружный нос имеет форму трехгранной пирамиды. Костная часть представлена носовыми костями. Соединяясь по средней линии, они образуют спинку носа. Кнаружи от носовых костей расположены лобные отростки верхней челюсти, которые являются боковыми поверхностями наружного носа.",
+    "paragraph": 224
+  },
+  {
+    "n": 196,
+    "prompt": "Трахея:",
+    "answer": "Трахея – самый длинный орган дыхательного тракта, в виде воздухоносной трубки (7-11 см), выстлана реснитчатым эпителием, которая соединяет гортань и бронхи.",
+    "paragraph": 225
+  },
+  {
+    "n": 197,
+    "prompt": "Главные бронхи:",
+    "answer": "Главные бронхи (лат. bronchi principales) — две ветви трахеи, входящие в ворота правого и левого лёгкого.",
+    "paragraph": 226
+  },
+  {
+    "n": 198,
+    "prompt": "Плевра:",
+    "answer": "Плевра – это оболочка легких. Она состоит из двух листков: париетального (покрывающего грудную клетку изнутри) и висцерального (прилегающего к легким). Между листками имеется щель – плевральная полость, в которой всегда имеется некоторое количество плевральной жидкости.",
+    "paragraph": 227
+  },
+  {
+    "n": 199,
+    "prompt": "В верхнем средостении находятся:",
+    "answer": "К верхнему средостению относятся все анатомические структуры, лежащие выше верхнего края перикарда — вилочковая железа (тимус) или замещающая её клетчатка, правая и левая плечеголовные вены, внеперикардиальная часть верхней полой вены, дуга аорты и отходящие от неё ветви, трахея, верхняя часть пищевода, грудной (лимфатический) проток, симпатические стволы, блуждающие нервы, диафрагмальные нервы, нервные сплетения органов и сосудов[1]. Границами верхнего средостения являются верхняя апертура грудной клетки и линия, проведённая между углом грудины и межпозвонковым диском Th4—Th5 (4—5 грудные позвонки)",
+    "paragraph": 228
+  },
+  {
+    "n": 200,
+    "prompt": "В нижнепереднем средостении находятся:",
+    "answer": "Нижнее средостение ограничено верхним краем перикарда и диафрагмой, в свою очередь делится на передний, средний и задний отделы.",
+    "paragraph": 229,
+    "reviewOnly": true
+  },
+  {
+    "n": 201,
+    "prompt": "В нижнезаднем средостении различают:",
+    "answer": "см тетради",
+    "paragraph": 230,
+    "reviewOnly": true
+  },
+  {
+    "n": 202,
+    "prompt": "Нижнесреднее средостение включает:",
+    "answer": "см тетради",
+    "paragraph": 231,
+    "reviewOnly": true
+  },
+  {
+    "n": 203,
+    "prompt": "Главный левый бронх:",
+    "answer": "Левый главный бронх отходит от трахеи под углом 50-70о и имеет длину 4-5 см. В состав бронхиального дерева (arbor bronchialis) (рис. 2.2) входят главные бронхи, долевые бронхи, сегментарные бронхи, многочисленные ветвления сегментарных бронхов, дольковые бронхи и терминальные бронхиолы.",
+    "paragraph": 232
+  },
+  {
+    "n": 204,
+    "prompt": "Правое лёгкое:",
+    "answer": "Правое лёгкое состоит из 3, а левое из 2 долей. Скелет лёгкого образуют древовидно разветвляющиеся бронхи. Каждое лёгкое покрыто серозной оболочкой — лёгочной плеврой и лежит в плевральном мешке. Внутренняя поверхность грудной полости покрыта пристеночной плеврой.",
+    "paragraph": 233
+  },
+  {
+    "n": 205,
+    "prompt": "Бронхолегочный сегмент состоит из следующих образований:",
+    "answer": "Бронхолегочные сегменты представляют часть паренхимы, куда входят сегментарный бронх и артерия",
+    "paragraph": 234
+  },
+  {
+    "n": 206,
+    "prompt": "Левое лёгкое:",
+    "answer": "Правое легкое большего объема, чем левое (приблизительно на 10%), в то же время оно несколько короче и шире, во-первых, благодаря тому, что правый купол диафрагмы стоит выше левого (влияние объемистой правой доли печени), и, во-вторых, сердце располагается больше влево, чем вправо, уменьшая тем самым ширину левого легкого.",
+    "paragraph": 235,
+    "reviewOnly": true
+  },
+  {
+    "n": 207,
+    "prompt": "Плевральные синусы:",
+    "answer": "Там, где легочные края не совпадают с плевральными грани­цами, между ними остаются запасные пространства, называемые синусами плевры, recessus pleurales. В них легкое заходит только в момент самого глубокого вдоха. Плевральные синусы составляют часть полости плевры и образуются в местах перехода одной части париетальной плевры в другую",
+    "paragraph": 236
+  },
+  {
+    "n": 208,
+    "prompt": "Средостение делится на:",
+    "answer": "Обычно средостение делится на два отдела. В верхнем средостении различают переднюю и заднюю части, в нижнем - переднюю, среднюю и заднюю части.",
+    "paragraph": 237
+  },
+  {
+    "n": 209,
+    "prompt": "Стенка полых органов состоит из следующих оболочек:",
+    "answer": "Они состоят из трех оболочек: внутренней – слизистой оболочки с подслизистой основой, средней – мышечной и наружной – серозной или соединительнотканной",
+    "paragraph": 238
+  },
+  {
+    "n": 210,
+    "prompt": "По морфологическим признакам органы делятся на:",
+    "answer": "паренхиматозные, трубчатые, или полые",
+    "paragraph": 239
+  },
+  {
+    "n": 211,
+    "prompt": "По отношению к брюшине желудок расположен:",
+    "answer": "интроперитонеально",
+    "paragraph": 240
+  },
+  {
+    "n": 212,
+    "prompt": "У печени различают следующие доли, за исключением:",
+    "answer": "правую долю, левую долю, хвостатую долю и квадратную долю.",
+    "paragraph": 241,
+    "reviewOnly": true
+  },
+  {
+    "n": 213,
+    "prompt": "Основной процесс всасывания питательных веществ происходит в:",
+    "answer": "тонком кишечнике",
+    "paragraph": 242
+  },
+  {
+    "n": 214,
+    "prompt": "Укажите части ободочной кишки:",
+    "answer": "восходящая ободочная кишка, поперечная ободочная кишка, нисходящая ободочная кишка, сигмовидная ободочная кишка",
+    "paragraph": 243
+  },
+  {
+    "n": 215,
+    "prompt": "Между подвздошной и восходящей ободочной кишкой располагается:",
+    "answer": "Слепая кишка",
+    "paragraph": 244
+  },
+  {
+    "n": 216,
+    "prompt": "Место перехода пищевода в желудок называется:",
+    "answer": "кардиальное отверстие",
+    "paragraph": 245
+  },
+  {
+    "n": 217,
+    "prompt": "Как называется часть зуба, находящаяся в десне?",
+    "answer": "шейка",
+    "paragraph": 246
+  },
+  {
+    "n": 218,
+    "prompt": "Куда открываются протоки печени и поджелудочной железы?",
+    "answer": "В двенадцатиперстную кишку",
+    "paragraph": 247
+  },
+  {
+    "n": 219,
+    "prompt": "Что происходит в толстом кишечнике?",
+    "answer": "Происходит перемешивание химуса под действием перистальтики (сокращения гладких мышц), концентрация химуса за счет обратного всасывания воды и дальнейшее его расщепление с участием живущих в толстом кишечнике бактерий.",
+    "paragraph": 248
+  },
+  {
+    "n": 220,
+    "prompt": "Какая кислота входит в состав желудочного сока?",
+    "answer": "пепсин",
+    "paragraph": 249,
+    "reviewOnly": true
+  },
+  {
+    "n": 221,
+    "prompt": "Где происходит превращение глюкозы в гликоген?",
+    "answer": "в печени",
+    "paragraph": 250
+  },
+  {
+    "n": 222,
+    "prompt": "Аппендикс (червеобразный отросток) – это отросток:",
+    "answer": "слепой кишки",
+    "paragraph": 251
+  },
+  {
+    "n": 223,
+    "prompt": "Какая ткань образует средний слой желудка?",
+    "answer": "гладкая мышечная ткань",
+    "paragraph": 252
+  },
+  {
+    "n": 224,
+    "prompt": "В какой части зуба находятся нервы и кровеносные сосуды?",
+    "answer": "пульпа",
+    "paragraph": 253
+  },
+  {
+    "n": 225,
+    "prompt": "НЕверное утверждение о червеобразном отростке:",
+    "answer": "Червеобра́зный отро́сток— придаток слепой кишки у человека. Представляет собой слепо заканчивающееся трубчатое образование, просвет которого соединяется с просветом слепой кишки.",
+    "paragraph": 254,
+    "reviewOnly": true
+  },
+  {
+    "n": 226,
+    "prompt": "Мышечная оболочка желудка состоит из 3-х слоёв:",
+    "answer": "продольный (наружный), круговой (средний) косой - (внутренний)",
+    "paragraph": 255
+  },
+  {
+    "n": 227,
+    "prompt": "Выберите правильную последовательность отделов толстого кишечника:",
+    "answer": "слепая кишка, восходящая ободочная кишка, поперечная ободочная кишка, нисходящая ободочная кишка, сигмовидная ободочная кишка и прямая кишка.",
+    "paragraph": 256
+  },
+  {
+    "n": 228,
+    "prompt": "Гаустры характерны для:",
+    "answer": "толстого кишечника",
+    "paragraph": 257
+  },
+  {
+    "n": 229,
+    "prompt": "Малая кривизна желудка направлена:",
+    "answer": "вверх и вправо",
+    "paragraph": 258
+  },
+  {
+    "n": 230,
+    "prompt": "Анатомические сужения пищевода расположены:",
+    "answer": "Фарингеальное(1) - уего начала. Бронхиальное(2) - на уровне раздвоения трахеи. Диафрагмальное(3) - в месте, где пищевод проходит через диафрагму.",
+    "paragraph": 259
+  },
+  {
+    "n": 231,
+    "prompt": "Для желудка характерны следующие части:",
+    "answer": "ардиальная и пилорическая части желудка",
+    "paragraph": 260,
+    "reviewOnly": true
+  },
+  {
+    "n": 232,
+    "prompt": "Двенадцатиперстная кишка:",
+    "answer": "это начальный отдел тонкой кишки, расположенный от привратника желудка до тощей кишки. Длина двенадцатиперстной кишки человека составляет около 25-30 см или 12 поперечников пальца руки, отсюда и ее название. Из желудка переваренная пища вместе с желудочным соком (это называется химусом) поступает в двенадцатиперстную кишку, где перемешивается с дуоденальным секретом",
+    "paragraph": 261
+  },
+  {
+    "n": 233,
+    "prompt": "Толстая кишка отличается от тонкой кишки следующими особенностями:",
+    "answer": "В тонкой кишке эпителий ворсинчатый, содержит железы и имеет круговые складки. Эти анатомические особенности обеспечивают пристеночное пищеварение и увеличивают площадь всасывания. В толстом кишечнике слизистая оболочка гладкая, а имеющиеся в ней бокаловидные клетки выделяют слизь. Снаружи кишечник покрыт серозной оболочкой, в некоторых участках она формирует брыжейки. В них проходят питающие сосуды.",
+    "paragraph": 262
+  },
+  {
+    "n": 234,
+    "prompt": "Альфа- и бета-клетки поджелудочной железы вырабатывают:",
+    "answer": "А-клетки (альфа-клетки, ацидофильные инсулоциты) - вырабатывают глюкагон при помощи которого происходит процесс превращения гликогена в глюкозу. Секреция этого гормона приводит к повышению уровня глюкозы в крови. В-клетки (бета-клетки) - секретируют инсулин, регулирующий уровень глюкозы в крови.",
+    "paragraph": 263
+  },
+  {
+    "n": 235,
+    "prompt": "Селезёнка:",
+    "answer": "непарный паренхиматозный орган, расположенный в брюшной полости, выполняющий иммунологическую, фильтрационную и кроветворную функции, принимающий участие в обмене веществ, в частности железа, белков и др. Селезёнка не принадлежит к числу жизненно важных органов, но в связи с перечисленными функциональными особенностями играет существенную роль в организме.",
+    "paragraph": 264
+  },
+  {
+    "n": 236,
+    "prompt": "Комплекс Гольджи в клетке выполняет функцию:",
+    "answer": "сортировка белков и других молекул процессинг молекул синтез полисахаридов и гликопротеинов (гликокаликса, слизи) конденсация секреторного продукта обеспечение новообразованных гранул мембраной (синтезированной в ЭПС) образование секреторных пузырьков, гидролазных пузырьков, мембранных пузырьков.",
+    "paragraph": 265
+  },
+  {
+    "n": 237,
+    "prompt": "Наружный слой кожи покрыт эпителием:",
+    "answer": "плоским эпителием",
+    "paragraph": 266
+  },
+  {
+    "n": 238,
+    "prompt": "Для роговицы глаза, слизистой оболочки полости рта, пищевода типичным является эпителий:",
+    "answer": "Могослойный плоский неороговевающий эпителий",
+    "paragraph": 267
+  },
+  {
+    "n": 239,
+    "prompt": "Митохондрии выполняют:",
+    "answer": "окисление питательных веществ и производство молекул АТФ",
+    "paragraph": 268
+  },
+  {
+    "n": 240,
+    "prompt": "Однослойный плоский эпителий выстилает внутреннюю поверхность:",
+    "answer": "стенок, ограничивающих три важнейшие полости организма животных — перикардиальную, грудную и брюшную, а также покрывает органы, расположенные в этих полостях",
+    "paragraph": 269
+  },
+  {
+    "n": 241,
+    "prompt": "Клеточная оболочка осуществляет:",
+    "answer": "Защищает внутреннее содержимое клетки, Имеет избирательную проницаемость, Сохраняет форму клетки, Обеспечивает связь между клетками",
+    "paragraph": 270
+  },
+  {
+    "n": 242,
+    "prompt": "Однослойный цилиндрический эпителий выстилает внутреннюю поверхность:",
+    "answer": "желудочно-кишечного тракта, желчного пузыря, выводных протоков печени и поджелудочной железы",
+    "paragraph": 271
+  },
+  {
+    "n": 243,
+    "prompt": "Клеточный центр принимает активное участие в:",
+    "answer": "в делении клетки",
+    "paragraph": 272
+  },
+  {
+    "n": 244,
+    "prompt": "Переходный эпителий выстилает внутреннюю поверхность:",
+    "answer": "мочевыводящих путей и временный зародышевый ор-ган — аллантоис",
+    "paragraph": 273
+  },
+  {
+    "n": 245,
+    "prompt": "Рибосомы находятся в:",
+    "answer": "В эукариотических клетках рибосомы располагаются на мембранах шероховатой эндоплазматической сети и в неприкреплённой форме в цитоплазме.",
+    "paragraph": 274
+  },
+  {
+    "n": 246,
+    "prompt": "Лизосомы осуществляют :",
+    "answer": "существляет в клетке процессы распада",
+    "paragraph": 275
+  }
+]
+;/* AMG year 1, Russian. The source contains open prompts and study notes. */
+const anatomyRuTitles={
+ theory:'Анатомия — теоретическая часть',
+ plates:'Анатомия — практическая часть',
+};
+const anatomyRuModes=[
+ ['ordered','📘 По порядку'],['random','🔀 В случайном порядке'],
+ ['short','🪴 10 вопросов'],['wrong','🎯 Работа над ошибками'],
+ ['star','⭐ Избранное'],['flash','🃏 Карточки'],['exam','📝 Пробный экзамен'],
+];
+const anatomyRuAccess=()=>U?.year===1&&(U.program||'AMG')==='AMG'&&U.language==='ru';
+const anatomyRuReviewable=ANATOMY_RU_QUESTIONS.filter(q=>!q.reviewOnly);
+const anatomyRuBack='<button class="pill gh" data-ru-anatomy="back">← К списку работ</button>';
+const anatomyRuMenuBack='<button class="pill gh" data-ru-anatomy="theory">← К режимам подготовки</button>';
+let anatomyRuSession=null;
+let anatomyRuFigureLoad=null;
+let anatomyRuFigureRequest=0;
+
+function anatomyRuProgress(){
+ try{return JSON.parse(localStorage.getItem('cecmb:anatomy-ru:'+U.id))||{};}catch{return {};}
+}
+function anatomyRuUpdate(n,change){
+ const progress=anatomyRuProgress();
+ progress[n]={...progress[n],...change};
+ try{localStorage.setItem('cecmb:anatomy-ru:'+U.id,JSON.stringify(progress));}catch{}
+}
+function anatomyRuMenu(message=''){
+ if(!anatomyRuAccess())return;
+ anatomyRuSession=null;
+ const progress=anatomyRuProgress();
+ view(`<h1>${anatomyRuTitles.theory}</h1>
+ <p class="hero-note">${ANATOMY_RU_QUESTIONS.length} вопросов · 1 курс · 1 семестр</p>
+ <p class="path-note">Введите ответ, затем сравните его с заметкой из документа. Задания с неполными или неоднозначными заметками доступны для чтения отдельно. Результаты самопроверки и избранное сохраняются в этом браузере.</p>
+ ${message?`<p role="status">${esc(message)}</p>`:''}
+ <div class="grid">${anatomyRuModes.map(([id,title])=>{
+  const note=id==='exam'?'110 вопросов · проверка в конце':
+   id==='star'?ANATOMY_RU_QUESTIONS.filter(q=>progress[q.n]?.star).length+' в избранном':
+   id==='wrong'?anatomyRuReviewable.filter(q=>progress[q.n]?.result==='wrong').length+' для повторения':'';
+  return `<button class="tile" data-ru-anatomy="start" data-mode="${id}">${title}${note?`<small>${note}</small>`:''}</button>`;
+ }).join('')}</div>
+ <div class="glass"><label for="anatomy-ru-search">🔎 Поиск по номеру или тексту вопроса</label><input id="anatomy-ru-search" type="search" autocomplete="off"><div id="anatomy-ru-results"></div><button class="pill gh" data-ru-anatomy="notes">Задания без надёжного ответа (${ANATOMY_RU_QUESTIONS.length-anatomyRuReviewable.length})</button></div>${anatomyRuBack}`,anatomyRuTitles.theory);
+}
+
+function anatomyRuStart(mode,n){
+ const progress=anatomyRuProgress();
+ let list;
+ if(mode==='single')list=ANATOMY_RU_QUESTIONS.filter(q=>q.n===n);
+ else if(mode==='star')list=ANATOMY_RU_QUESTIONS.filter(q=>progress[q.n]?.star);
+ else if(mode==='wrong')list=anatomyRuReviewable.filter(q=>progress[q.n]?.result==='wrong');
+ else if(mode==='random'||mode==='flash')list=shuffle(anatomyRuReviewable.slice());
+ else if(mode==='short'||mode==='exam')list=shuffle(anatomyRuReviewable.slice()).slice(0,mode==='exam'?110:10);
+ else list=anatomyRuReviewable;
+ if(!list.length)return anatomyRuMenu('В этом режиме пока нет вопросов.');
+ anatomyRuSession={mode,list,index:0,review:mode!=='exam',shown:false,drafts:{},results:{}};
+ anatomyRuQuestion();
+}
+
+function anatomyRuQuestion(){
+ const session=anatomyRuSession;
+ if(!anatomyRuAccess()||!session)return;
+ const q=session.list[session.index];
+ const star=!!anatomyRuProgress()[q.n]?.star;
+ const last=session.index===session.list.length-1;
+ const draft=session.drafts[q.n]||'';
+ const checking=session.review&&(session.shown||session.mode==='exam');
+ view(`<div class="qhead"><span class="badge">№ ${q.n} · ${session.index+1}/${session.list.length}</span><button class="star ${star?'on':''}" aria-pressed="${star}" aria-label="В избранное" data-ru-anatomy="star">★</button></div>
+ <p class="qtext">${esc(q.prompt)}</p>
+ ${session.mode==='flash'?'':`<label for="anatomy-ru-answer">Ваш ответ</label><textarea id="anatomy-ru-answer" rows="3" ${checking?'readonly':''}>${esc(draft)}</textarea>`}
+ ${checking?`<section class="glass"><h2>${q.reviewOnly?'Заметка из документа':'Ответ из документа'}</h2><p style="white-space:pre-line">${esc(q.answer||'В документе нет ответа.')}</p>
+ ${q.reviewOnly?'<p>Этого материала недостаточно для проверки ответа.</p>':`<div class="row"><button class="pill g" data-ru-anatomy="rate" data-value="correct">Ответил(а) верно</button><button class="pill gh" data-ru-anatomy="rate" data-value="wrong">Повторить позже</button></div>`}</section>`:
+ session.review?`<button class="pill" data-ru-anatomy="show">${q.reviewOnly?'Показать заметку':'Показать ответ'}</button>`:
+ `<button class="pill" data-ru-anatomy="advance">${last?'Перейти к самопроверке':'Следующий вопрос'}</button>`}
+ ${checking?`<button class="pill gh" data-ru-anatomy="advance">${last?'Завершить':'Пропустить →'}</button>`:''}
+ ${anatomyRuMenuBack}`,anatomyRuTitles.theory);
+}
+
+function anatomyRuAdvance(){
+ const s=anatomyRuSession;
+ if(s.index+1<s.list.length){s.index++;s.shown=false;return anatomyRuQuestion();}
+ if(!s.review){s.review=true;s.index=0;return anatomyRuQuestion();}
+ const results=Object.values(s.results);
+ return anatomyRuMenu(`Проверено: ${results.length} из ${s.list.length}. Верно по вашей оценке: ${results.filter(x=>x==='correct').length}.`);
+}
+
+function anatomyRuNotes(){
+ const notes=ANATOMY_RU_QUESTIONS.filter(q=>q.reviewOnly);
+ view(`<h1>Задания без надёжного ответа</h1><p>Эти задания требуют уточнения. Они не входят в пробный экзамен.</p><div class="grid">${notes.map(q=>`<button class="tile" data-ru-anatomy="item" data-number="${q.n}">№ ${q.n}<small>${esc(q.prompt)}</small></button>`).join('')}</div>${anatomyRuMenuBack}`,anatomyRuTitles.theory);
+}
+function anatomyRuLoadFigures(){
+ if(window.anatomyRuFigures)return Promise.resolve(window.anatomyRuFigures);
+ if(!anatomyRuFigureLoad)anatomyRuFigureLoad=new Promise((resolve,reject)=>{
+  const script=document.createElement('script');
+  const prefix=location.protocol==='file:'&&!location.pathname.includes('/public/')?'./public/':'./';
+  script.src=prefix+'anatomie-ru-planse.js';
+  script.onload=()=>{if(window.anatomyRuFigures?.length===35)resolve(window.anatomyRuFigures);else reject(Error('Invalid figure list'));};
+  script.onerror=()=>reject(Error('Figure load failed'));
+  document.head.append(script);
+ }).catch(error=>{anatomyRuFigureLoad=null;throw error;});
+ return anatomyRuFigureLoad;
+}
+async function anatomyRuPlates(index=0){
+ if(!anatomyRuAccess())return;
+ const ticket=++anatomyRuFigureRequest;
+ view(`<h1>${anatomyRuTitles.plates}</h1><p id="anatomy-ru-plate-status" role="status">Загрузка изображений…</p>${anatomyRuBack}`,anatomyRuTitles.plates);
+ try{
+  const figures=await anatomyRuLoadFigures();
+  if(ticket!==anatomyRuFigureRequest||!anatomyRuAccess()||!$('#anatomy-ru-plate-status'))return;
+  view(`<h1>${anatomyRuTitles.plates}</h1>
+   <p class="path-note">Назовите структуры по номерам на рисунке. В документе нет отдельного ключа к изображениям.</p>
+   <label for="anatomy-ru-plate-select">Выберите изображение</label>
+   <select id="anatomy-ru-plate-select" class="full-select">${figures.map((_,i)=>`<option value="${i}" ${i===index?'selected':''}>Рисунок ${i+1} из ${figures.length}</option>`).join('')}</select>
+   <figure class="nursing-figure"><img style="height:auto;max-height:75vh" src="${figures[index]}" alt="Анатомический рисунок ${index+1}"></figure>
+   <div class="row"><button class="pill gh" data-ru-anatomy="plate" data-index="${index-1}" ${!index?'disabled':''}>← Предыдущий</button><button class="pill" data-ru-anatomy="plate" data-index="${index+1}" ${index===figures.length-1?'disabled':''}>Следующий →</button></div>${anatomyRuBack}`,anatomyRuTitles.plates);
+ }catch{
+  const status=$('#anatomy-ru-plate-status');
+  if(status&&anatomyRuAccess()&&ticket===anatomyRuFigureRequest){
+   status.textContent='Не удалось загрузить изображения.';
+   status.insertAdjacentHTML('afterend','<button class="pill" data-ru-anatomy="plates">Повторить загрузку</button>');
+  }
+ }
+}
+
+document.body.addEventListener('input',event=>{
+ if(!anatomyRuAccess())return;
+ if(event.target.id==='anatomy-ru-answer'&&anatomyRuSession){
+  const s=anatomyRuSession;
+  s.drafts[s.list[s.index].n]=event.target.value;
+ }
+ if(event.target.id!=='anatomy-ru-search')return;
+ const query=event.target.value.trim().toLocaleLowerCase('ru');
+ const matches=query?ANATOMY_RU_QUESTIONS.filter(q=>/^\d+$/.test(query)?q.n===Number(query):q.prompt.toLocaleLowerCase('ru').includes(query)):[];
+ $('#anatomy-ru-results').innerHTML=query?(matches.slice(0,40).map(q=>`<button class="tile" data-ru-anatomy="item" data-number="${q.n}">№ ${q.n}<small>${esc(q.prompt)}</small></button>`).join('')||'<p>Ничего не найдено.</p>'):'';
+});
+document.body.addEventListener('change',event=>{
+ if(anatomyRuAccess()&&event.target.id==='anatomy-ru-plate-select')anatomyRuPlates(Number(event.target.value));
+});
+document.body.addEventListener('click',event=>{
+ const b=event.target.closest('[data-ru-anatomy]');
+ if(!b||!anatomyRuAccess())return;
+ const {ruAnatomy:action}=b.dataset;
+ if(action==='back'){anatomyRuSession=null;return sem(1,1);}
+ if(action==='theory')return anatomyRuMenu();
+ if(action==='plates'||action==='plate')return anatomyRuPlates(Number(b.dataset.index||0));
+ if(action==='notes')return anatomyRuNotes();
+ if(action==='start')return anatomyRuStart(b.dataset.mode);
+ if(action==='item')return anatomyRuStart('single',Number(b.dataset.number));
+ const s=anatomyRuSession;
+ if(!s)return;
+ const q=s.list[s.index];
+ if(action==='show'){s.shown=true;return anatomyRuQuestion();}
+ if(action==='advance')return anatomyRuAdvance();
+ if(action==='star'){
+  const on=!anatomyRuProgress()[q.n]?.star;
+  anatomyRuUpdate(q.n,{star:on});
+  b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));return;
+ }
+ if(action==='rate'&&s.review&&!q.reviewOnly){
+  s.results[q.n]=b.dataset.value;
+  anatomyRuUpdate(q.n,{result:b.dataset.value});
+  return anatomyRuAdvance();
+ }
+});
 </script><script>const EVALUATION_PLAN={
   "source": "Evaluari_ordonate_pe_ani_iarna_2026.pdf",
   "session": "Sesiunea de iarnă 2026",
@@ -1947,7 +3619,13 @@ function evaluationDocumentLinks(pdf){
  const href=esc(prefix+pdf.file);
  return `<div class="row"><a class="pill gh" href="${href}" target="_blank" rel="noopener noreferrer">Deschide PDF-ul original ↗</a><a class="pill gh" href="${href}" download>Descarcă PDF-ul</a></div>`;
 }
-function evaluationStatus(row){return evaluationBanks(row).length||evaluationDocument(row)?studyText('Materiale pentru calculator disponibile','Материалы для компьютерной части доступны'):studyText('În lucru','В разработке')}
+function evaluationRussianAnatomy(row){
+ if(typeof anatomyRuAccess!=='function'||!anatomyRuAccess())return '';
+ if(row.id==='existing-anatomie-teorie')return 'theory';
+ if(row.id==='existing-anatomie-imagini')return 'plates';
+ return '';
+}
+function evaluationStatus(row){if(evaluationRussianAnatomy(row))return 'Материалы доступны';return evaluationBanks(row).length||evaluationDocument(row)?studyText('Materiale pentru calculator disponibile','Материалы для компьютерной части доступны'):studyText('În lucru','В разработке')}
 function evaluationTiles(rows,semester=1){return rows.map(row=>`<button class="tile" data-evaluation="open" data-evaluation-id="${esc(row.id)}" data-evaluation-year="${row.year}" data-evaluation-semester="${semester}"><strong>${esc(evaluationTitle(row))}</strong><small>${evaluationFormat(row)}</small><small>${evaluationStatus(row)}</small></button>`).join('')}
 function evaluationYear(year){
  if(!U||!studyYears(U.program).includes(Number(year)))return;
@@ -1965,6 +3643,9 @@ sem=function(year,semester){
 year=evaluationYear;
 function evaluationOpen(id,year,semester=1){
  const row=evaluationRows(U.program||'AMG',year,semester).find(x=>x.id===id);if(!row)return;
+ const russianAnatomy=evaluationRussianAnatomy(row);
+ if(russianAnatomy==='theory')return anatomyRuMenu();
+ if(russianAnatomy==='plates')return anatomyRuPlates();
  const banks=evaluationBanks(row),back=`<button class="pill gh" data-evaluation="semester" data-evaluation-year="${year}" data-evaluation-semester="${semester}">${studyText('← Înapoi la evaluări','← К списку работ')}</button>`;
  const pdf=evaluationDocument(row);
  if(pdf&&!banks.length){
