@@ -7512,9 +7512,10 @@ function anatomyRuStart(mode,n){
  anatomyRuQuestion();
 }
 
-function anatomyRuQuestion(){
+function anatomyRuQuestion(keepPosition=false){
  const session=anatomyRuSession;
  if(!anatomyRuAccess()||!session)return;
+ const top=keepPosition?window.scrollY:0;
  const q=session.list[session.index];
  const star=!!anatomyRuProgress()[q.n]?.star;
  const last=session.index===session.list.length-1;
@@ -7525,20 +7526,23 @@ function anatomyRuQuestion(){
  const disabled=locked?'disabled':'';
  const complete=q.t==='single'?Number.isInteger(selected):q.t==='match'?q.l.every((_,i)=>Number.isInteger(selected?.[i])):q.t==='order'?selected?.length===q.o.length:!!selected?.length;
  const kind={single:'Один правильный ответ',multi:'Несколько правильных ответов',match:'Установите соответствие',order:'Установите порядок'}[q.t];
- const options=q.t==='match'?q.l.map((value,k)=>`<label class="mrow">${esc(value)}<select data-ru-match="${k}" ${disabled}><option value="">— выберите —</option>${order.map(i=>`<option value="${i}" ${selected?.[k]===i?'selected':''}>${esc(q.o[i])}</option>`).join('')}</select></label>`).join('')
+ const choice=q.t==='single'||q.t==='multi';
+ const options=q.t==='match'?q.l.map((value,k)=>`<label class="mrow">${esc(value)}<select data-ru-match="${k}" ${disabled}><option value="">— выберите —</option>${order.map((i,j)=>`<option value="${i}" ${selected?.[k]===i?'selected':''}>${letters[j]}) ${esc(q.o[i])}</option>`).join('')}</select></label>`).join('')
  :order.map((i,k)=>{
   const position=Array.isArray(selected)?selected.indexOf(i):-1;
   const active=selected===i||position>=0;
-  return `<button class="opt ${active?'sel':''}" aria-pressed="${active}" data-ru-anatomy="pick" data-index="${i}" ${disabled}><b>${q.t==='order'&&active?position+1:letters[k]}</b><span>${esc(q.o[i])}</span></button>`;
+  const state=choice?cls(q,ident(q.o.length),selected,i,locked):active?'sel':'';
+  return `<button class="opt ${state}" ${choice?`data-choice="${q.t}"`:''} aria-pressed="${active}" data-ru-anatomy="pick" data-index="${i}" ${disabled}><b>${q.t==='order'&&active?position+1:letters[k]}</b><span>${esc(q.o[i])}</span>${choice?'<span class="choice-mark" aria-hidden="true"></span>':''}</button>`;
  }).join('');
  const correct=judge(q,ident(q.o.length),selected);
  const answer=q.t==='single'?q.o[q.a]:q.t==='match'?q.l.map((l,i)=>l+' → '+q.o[q.a[i]]).join('\n'):q.a.map(i=>q.o[i]).join(q.t==='order'?' → ':'\n');
- const result=locked?`<section class="glass"><p role="status">${selected==null?'Правильный ответ':correct?'Верно ✓':'Ваш ответ не совпал с ключом'}</p><p style="white-space:pre-line">${esc(answer)}</p></section>`:'';
+ const result=locked?`<div class="fb ${correct?'ok':'bad'}" role="status" style="white-space:pre-line">${correct?'Верно ✓':`Правильный ответ: ${esc(answer)}`}</div>`:'';
  let actions='';
  if(locked||!session.review)actions=`<button class="pill" data-ru-anatomy="advance">${last?(session.review?'Завершить':'Сдать экзамен'):'Следующий вопрос'}</button>`;
- else actions=`${session.mode!=='flash'?'<button class="pill g" data-ru-anatomy="check" '+(complete?'':'disabled')+'>Проверить</button>':''}<button class="pill gh" data-ru-anatomy="show">Показать правильный ответ</button>`;
- view(`<div class="qhead"><span class="badge">№ ${q.n} · ${session.index+1}/${session.list.length}</span><button class="star ${star?'on':''}" aria-pressed="${star}" aria-label="В избранное" data-ru-anatomy="star">★</button></div>
- <p class="hero-note">${kind}</p><p class="qtext">${esc(q.s)}</p>${options}${result}${actions}${anatomyRuMenuBack}`,anatomyRuTitles.theory);
+ else actions=`${session.mode!=='flash'&&q.t!=='single'&&q.t!=='order'?'<button class="pill g" data-ru-anatomy="check" '+(complete?'':'disabled')+'>Проверить</button>':''}<button class="pill gh" data-ru-anatomy="show">💡 Показать правильный ответ</button>`;
+ view(`<div class="bar"><i style="width:${session.index/session.list.length*100}%"></i></div><div class="qhead"><span class="badge">№ ${q.n} · ${session.index+1}/${session.list.length}</span><button class="star ${star?'on':''}" aria-pressed="${star}" aria-label="В избранное" data-ru-anatomy="star">★</button></div>
+ <div class="qguide ${q.t==='multi'?'multi':''}"><strong>${q.t==='multi'?'▣':'◉'} ${kind}</strong></div><p class="qtext">${esc(q.s)}</p>${options}${result}${actions}${anatomyRuMenuBack}`,anatomyRuTitles.theory);
+ if(keepPosition)window.scrollTo(0,top);
 }
 function anatomyRuCheck(reveal=false){
  const s=anatomyRuSession,q=s.list[s.index];
@@ -7549,7 +7553,8 @@ function anatomyRuCheck(reveal=false){
   s.results[q.n]=correct?'correct':'wrong';
   anatomyRuUpdate(q.n,{result:s.results[q.n]});
  }
- s.shown=true;anatomyRuQuestion();
+ s.shown=true;anatomyRuQuestion(true);
+ if(!reveal)feedback(correct);
 }
 function anatomyRuAdvance(){
  const s=anatomyRuSession;
@@ -7614,7 +7619,7 @@ document.body.addEventListener('change',event=>{
  if(k===undefined||!s||s.shown||s.mode==='exam'&&s.review)return;
  const q=s.list[s.index];
  (s.answers[q.n]||=q.l.map(()=>null))[Number(k)]=event.target.value===''?null:Number(event.target.value);
- anatomyRuQuestion();
+ anatomyRuQuestion(true);
 });
 document.body.addEventListener('click',event=>{
  const b=event.target.closest('[data-ru-anatomy]');
@@ -7633,7 +7638,8 @@ document.body.addEventListener('click',event=>{
   const i=Number(b.dataset.index);
   if(q.t==='single')s.answers[q.n]=i;
   else {const a=s.answers[q.n]||[];s.answers[q.n]=a.includes(i)?a.filter(v=>v!==i):[...a,i];}
-  return anatomyRuQuestion();
+  if(s.review&&s.mode!=='flash'&&(q.t==='single'||q.t==='order'&&s.answers[q.n].length===q.o.length))return anatomyRuCheck();
+  return anatomyRuQuestion(true);
  }
  if(action==='advance')return anatomyRuAdvance();
  if(action==='star'){
